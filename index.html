@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Hub a Nice Day</title>
   <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -10,7 +10,27 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-  </style>
+  
+    /* ===== モバイル専用スタイル ===== */
+    @media screen and (max-width: 768px) {
+      body { overflow-x: hidden; }
+      table { font-size: 12px !important; }
+      td, th { padding: 5px 6px !important; }
+      input, select { font-size: 16px !important; }
+    }
+    /* モバイルカードホーム */
+    #mobile-card-overlay {
+      display: none;
+      position: fixed; inset: 0; z-index: 9000;
+      background: #f0f4f8;
+      overflow-y: auto;
+      flex-direction: column;
+    }
+    @media screen and (max-width: 768px) {
+      #mobile-card-overlay { display: flex; }
+      #mobile-card-overlay.hidden { display: none !important; }
+    }
+</style>
 </head>
 <body>
   <div id="root"></div>
@@ -402,6 +422,15 @@ const GCSS=`
   .slide-in{animation:slideIn 0.2s ease both;}
   .fade-in{animation:fadeIn 0.18s ease both;}
   *{box-sizing:border-box;} input,select,textarea,button{font-family:inherit;}
+  @media(max-width:768px){
+    header.desktop-header{display:none!important;}
+    main{padding:12px 8px 75px!important;}
+    .modal-box{margin:8px!important;max-height:90vh!important;overflow-y:auto!important;}
+    table{font-size:12px!important;}
+    td,th{padding:4px 5px!important;}
+    button{min-height:36px;}
+    input,select{font-size:16px!important;} /* iOSズーム防止 */
+  }
   ::-webkit-scrollbar{width:6px;height:6px} ::-webkit-scrollbar-track{background:#f1f5f9} ::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
 `;
 
@@ -3852,6 +3881,16 @@ function AppInner() {
   );
 
   const dk=selDate?dateKey(selDate.getFullYear(),selDate.getMonth(),selDate.getDate()):null;
+  // モバイルビュー
+  const [mobileView, setMobileView] = useState('home');
+  // カード選択でページ遷移
+  const handleCardSelect = useCallback((key) => {
+    if (key === 'calendar') { setMobileView('calendar'); setView('calendar'); }
+    else if (key === 'schedule') { setMobileView('schedule'); setView('schedule'); }
+    else if (key === 'loaner') { setMobileView('loaner'); if(selDate)setLoanerMonth(new Date(selDate.getFullYear(),selDate.getMonth(),1)); setPickMode(false); setView('loaner'); }
+    else if (key === 'notes') { setMobileView('notes'); setView('calendar'); }
+  }, [selDate, setLoanerMonth]);
+  const handleMobileHome = useCallback(() => { setMobileView('home'); }, []);
   const dateLabel=selDate?`${selDate.getMonth()+1}月${selDate.getDate()}日`:'';
   const moveDate=(days)=>{if(!selDate)return;const d=new Date(selDate);d.setDate(d.getDate()+days);setSelDate(d);};
   const dayMemos=dk?memoData[dk]||[]:[];
@@ -3860,8 +3899,33 @@ function AppInner() {
     <div style={{minHeight:'100vh',background:'linear-gradient(140deg,#1e1b4b,#4338ca,#0e7490)',fontFamily:'system-ui,-apple-system,sans-serif'}}>
       <style>{GCSS}</style>
 
+      {/* ── モバイル専用ヘッダー ── */}
+      {currentUser && (
+        <MobileTopBar
+          currentUser={currentUser}
+          vsStore={vsStore}
+          vsId={vsId}
+          STORES={STORES}
+          setViewStore={(id)=>{setViewStore(id);setLoanerPinnedRes(null);setLoanerHoverRes(null);}}
+          onLogout={()=>{releaseLock(curLockKey);setCurrentUser(null);setCurLockKey(null);setModalOpen(false);}}
+          view={mobileView}
+          setView={setView}
+          onHome={mobileView!=='home' ? handleMobileHome : null}
+        />
+      )}
+      {currentUser && mobileView==='home' && (
+        <div className="mobile-card-home"><MobileHomeCards
+          vsStore={vsStore}
+          onSelect={handleCardSelect}
+          inspData={inspData}
+          schedData={schedData}
+          selDate={selDate}
+          memoData={memoData}
+        /></div>
+      )}
+
       {/* ── ヘッダー ── */}
-      <header ref={headerRef} style={{background:'rgba(255,255,255,0.97)',borderBottom:`3px solid ${vsStore.color}`,padding:'9px 18px',position:'sticky',top:0,zIndex:500,boxShadow:'0 4px 20px rgba(0,0,0,0.15)'}}>
+      <header ref={headerRef} className="desktop-header" style={{background:'rgba(255,255,255,0.97)',borderBottom:`3px solid ${vsStore.color}`,padding:'9px 18px',position:'sticky',top:0,zIndex:500,boxShadow:'0 4px 20px rgba(0,0,0,0.15)'}}>
         {(()=>{
           const userStore=STORES.find(s=>s.id===(currentUser?.store?.id||'honten'))||STORES[0];
           return(
@@ -3940,7 +4004,7 @@ function AppInner() {
         {exportStatus==='err'&&(<div style={{position:'fixed',top:70,right:20,zIndex:9999,background:'#dc2626',color:'white',borderRadius:10,padding:'12px 18px',fontSize:13,fontWeight:700,boxShadow:'0 4px 20px rgba(0,0,0,0.25)'}}>✕ コピーに失敗しました<br/><span style={{fontWeight:400,fontSize:11,opacity:0.9}}>ブラウザのクリップボード権限を確認してください</span></div>)}
       </header>
 
-      <main style={{maxWidth:1700,margin:'0 auto',padding:'20px 16px'}}>
+      <main style={{maxWidth:1700,margin:'0 auto',padding:'20px 16px',display:mobileView==='home'?'none':'block'}}>
 
         {/* ── カレンダー ── */}
         {view==='calendar'&&(()=>{
@@ -4845,6 +4909,125 @@ function AppInner() {
   );
 }
 
+
+// ========== モバイル用カード型ホーム画面 ==========
+
+function MobileHomeCards({ vsStore, onSelect, inspData, schedData, selDate, memoData }) {
+  const today = new Date();
+  const dk = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+  const todayInsp = inspData && inspData[dk] ? Object.values(inspData[dk]).filter(Boolean).length : 0;
+  const todayMemo = memoData && memoData[dk] ? memoData[dk].length : 0;
+  const DAYS = ['日','月','火','水','木','金','土'];
+  const cards = [
+    { key:'calendar', icon:'🚗', label:'車検カレンダー', sub:'予約確認・新規入力', color:'#4338ca', bg:'linear-gradient(135deg,#f5f3ff,#ede9fe)', border:'#c4b5fd', badge: todayInsp>0?`本日${todayInsp}件`:null },
+    { key:'schedule', icon:'📅', label:'スケジュール', sub:'日程・作業の確認', color:'#0e7490', bg:'linear-gradient(135deg,#ecfeff,#cffafe)', border:'#67e8f9', badge: selDate?`${selDate.getMonth()+1}/${selDate.getDate()}選択中`:'日付未選択' },
+    { key:'loaner',   icon:'🔑', label:'代車管理', sub:'代車・レンタカー状況', color:'#d97706', bg:'linear-gradient(135deg,#fffbeb,#fef3c7)', border:'#fcd34d', badge: null },
+    { key:'notes',    icon:'📋', label:'備考・メモ', sub:'日次メモ・連絡事項', color:'#16a34a', bg:'linear-gradient(135deg,#f0fdf4,#dcfce7)', border:'#86efac', badge: todayMemo>0?`${todayMemo}件`:null },
+  ];
+  return (
+    <div style={{padding:'16px', display:'flex', flexDirection:'column', gap:12}}>
+      <div style={{fontSize:13, color:'#6b7280', fontWeight:600, marginBottom:2}}>
+        {today.getMonth()+1}月{today.getDate()}日（{DAYS[today.getDay()]}）
+        <span style={{marginLeft:8, color:'#9ca3af', fontWeight:400}}>メニューを選択してください</span>
+      </div>
+      {cards.map(c => (
+        <button key={c.key} onClick={()=>onSelect(c.key)}
+          style={{display:'flex',alignItems:'center',gap:16,background:c.bg,border:`2px solid ${c.border}`,borderRadius:18,padding:'18px 20px',cursor:'pointer',textAlign:'left',fontFamily:'inherit',boxShadow:'0 4px 14px rgba(0,0,0,0.08)',transition:'transform 0.15s',width:'100%'}}
+          onTouchStart={e=>e.currentTarget.style.transform='scale(0.97)'}
+          onTouchEnd={e=>e.currentTarget.style.transform='scale(1)'}>
+          <span style={{fontSize:36,width:54,height:54,display:'flex',alignItems:'center',justifyContent:'center',background:'white',borderRadius:14,boxShadow:'0 2px 8px rgba(0,0,0,0.1)',flexShrink:0}}>{c.icon}</span>
+          <div style={{flex:1}}>
+            <div style={{fontSize:16,fontWeight:800,color:'#1e1b4b',marginBottom:3}}>{c.label}</div>
+            <div style={{fontSize:12,color:'#6b7280'}}>{c.sub}</div>
+          </div>
+          {c.badge&&<span style={{background:c.color,color:'white',padding:'4px 10px',borderRadius:12,fontSize:11,fontWeight:700,flexShrink:0}}>{c.badge}</span>}
+          <span style={{color:c.color,fontSize:22,flexShrink:0,fontWeight:300}}>›</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+// (旧BottomNav - 互換用スタブ)
+function MobileBottomNav({ view, setView, vsStore, selDate, onLoanerTab }) {
+  return (
+    <nav style={{
+      position:'fixed', bottom:0, left:0, right:0, zIndex:1000,
+      background:'white', borderTop:'2px solid #e5e7eb',
+      display:'flex', height:60,
+      boxShadow:'0 -2px 10px rgba(0,0,0,0.1)'
+    }}>
+      {MOBILE_TABS.map(t => {
+        const isActive = view === t.v;
+        const isDisabled = t.v === 'schedule' && !selDate;
+        return (
+          <button key={t.v}
+            onClick={() => {
+              if (isDisabled) return;
+              if (t.v === 'loaner') { onLoanerTab(); return; }
+              setView(t.v);
+            }}
+            style={{
+              flex:1, border:'none', background:'none', cursor: isDisabled ? 'not-allowed' : 'pointer',
+              display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:2,
+              color: isDisabled ? '#d1d5db' : isActive ? vsStore.color : '#6b7280',
+              borderTop: isActive ? `3px solid ${vsStore.color}` : '3px solid transparent',
+              transition:'all 0.15s', fontFamily:'inherit'
+            }}>
+            <span style={{fontSize:20}}>{t.icon}</span>
+            <span style={{fontSize:10, fontWeight: isActive ? 800 : 500}}>{t.label}</span>
+          </button>
+        );
+      })}
+    </nav>
+  );
+}
+
+function MobileTopBar({ currentUser, vsStore, vsId, STORES, setViewStore, onLogout, view, setView, onHome }) {
+  const titles = { home:'Hub a Nice Day', calendar:'🚗 車検カレンダー', schedule:'📅 スケジュール', loaner:'🔑 代車管理', notes:'📋 備考・メモ' };
+  const isHome = !onHome || view === 'home';
+  return (
+    <header style={{
+      position:'sticky', top:0, zIndex:500,
+      background:`linear-gradient(135deg, ${vsStore.color}, #0e7490)`,
+      color:'white', padding:'10px 16px',
+      display:'flex', alignItems:'center', justifyContent:'space-between',
+      boxShadow:'0 2px 10px rgba(0,0,0,0.2)'
+    }} className="mobile-top-nav">
+      <div style={{display:'flex', alignItems:'center', gap:8}}>
+        {!isHome && onHome && (
+          <button onClick={onHome}
+            style={{background:'rgba(255,255,255,0.2)', border:'none', borderRadius:8,
+              padding:'6px 10px', color:'white', cursor:'pointer', fontSize:14, fontWeight:700, fontFamily:'inherit'}}>
+            ‹ ホーム
+          </button>
+        )}
+        <div>
+          <div style={{fontSize:isHome?17:15, fontWeight:800}}>{titles[view]||'Hub a Nice Day'}</div>
+          <div style={{fontSize:11, opacity:0.85}}>{currentUser?.name} · {vsStore.name}</div>
+        </div>
+      </div>
+      <div style={{display:'flex', gap:8, alignItems:'center'}}>
+        {STORES.map(s => (
+          <button key={s.id} onClick={() => setViewStore(s.id)}
+            style={{padding:'4px 10px', borderRadius:12, border:'2px solid rgba(255,255,255,0.5)',
+              background: vsId===s.id ? 'white' : 'transparent',
+              color: vsId===s.id ? vsStore.color : 'white',
+              fontWeight:700, fontSize:11, cursor:'pointer'}}>
+            {s.name}
+          </button>
+        ))}
+        <button onClick={onLogout}
+          style={{background:'rgba(255,255,255,0.2)', border:'none', borderRadius:8,
+            padding:'6px 10px', color:'white', cursor:'pointer', fontSize:11, fontWeight:600}}>
+          ログアウト
+        </button>
+      </div>
+    </header>
+  );
+}
+// ========== モバイル用ボトムナビ ここまで ==========
+
 function App(){return <ErrorBoundary><AppInner/></ErrorBoundary>;}
 
 // ─ スタイル定数 ─
@@ -4861,5 +5044,121 @@ const JUMP_BTN =(color)=>({display:'flex',alignItems:'center',gap:3,padding:'5px
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App />);
   </script>
+
+<!-- ===== モバイルカードホーム（React外・純粋HTML） ===== -->
+<div id="mobile-card-overlay">
+  <div id="mobile-card-header" style="background:linear-gradient(135deg,#4338ca,#0e7490);color:white;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+    <div>
+      <div style="font-size:17px;font-weight:800;">Hub a Nice Day</div>
+      <div id="mobile-user-info" style="font-size:11px;opacity:0.85;">読み込み中...</div>
+    </div>
+    <div style="display:flex;gap:6px;">
+      <button id="mobile-store-honten" onclick="mobileSetStore('honten')" style="padding:5px 10px;border-radius:12px;border:2px solid rgba(255,255,255,0.5);background:white;color:#4338ca;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">本店</button>
+      <button id="mobile-store-sanda" onclick="mobileSetStore('sanda')" style="padding:5px 10px;border-radius:12px;border:2px solid rgba(255,255,255,0.5);background:transparent;color:white;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">三田店</button>
+    </div>
+  </div>
+  <div style="padding:16px;display:flex;flex-direction:column;gap:12px;flex:1;">
+    <div id="mobile-date-label" style="font-size:13px;color:#6b7280;font-weight:600;margin-bottom:2px;"></div>
+    <button onclick="mobileGo('calendar')" style="display:flex;align-items:center;gap:16px;background:linear-gradient(135deg,#f5f3ff,#ede9fe);border:2px solid #c4b5fd;border-radius:18px;padding:18px 20px;cursor:pointer;text-align:left;font-family:inherit;box-shadow:0 4px 14px rgba(0,0,0,0.08);width:100%;">
+      <span style="font-size:36px;width:54px;height:54px;display:flex;align-items:center;justify-content:center;background:white;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,0.1);flex-shrink:0;">🚗</span>
+      <div style="flex:1;text-align:left;">
+        <div style="font-size:16px;font-weight:800;color:#1e1b4b;margin-bottom:3px;">車検カレンダー</div>
+        <div style="font-size:12px;color:#6b7280;">予約確認・新規入力</div>
+      </div>
+      <span style="color:#4338ca;font-size:24px;font-weight:300;">›</span>
+    </button>
+    <button onclick="mobileGo('schedule')" style="display:flex;align-items:center;gap:16px;background:linear-gradient(135deg,#ecfeff,#cffafe);border:2px solid #67e8f9;border-radius:18px;padding:18px 20px;cursor:pointer;text-align:left;font-family:inherit;box-shadow:0 4px 14px rgba(0,0,0,0.08);width:100%;">
+      <span style="font-size:36px;width:54px;height:54px;display:flex;align-items:center;justify-content:center;background:white;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,0.1);flex-shrink:0;">📅</span>
+      <div style="flex:1;text-align:left;">
+        <div style="font-size:16px;font-weight:800;color:#1e1b4b;margin-bottom:3px;">スケジュール</div>
+        <div style="font-size:12px;color:#6b7280;">日程・作業の確認</div>
+      </div>
+      <span style="color:#0e7490;font-size:24px;font-weight:300;">›</span>
+    </button>
+    <button onclick="mobileGo('loaner')" style="display:flex;align-items:center;gap:16px;background:linear-gradient(135deg,#fffbeb,#fef3c7);border:2px solid #fcd34d;border-radius:18px;padding:18px 20px;cursor:pointer;text-align:left;font-family:inherit;box-shadow:0 4px 14px rgba(0,0,0,0.08);width:100%;">
+      <span style="font-size:36px;width:54px;height:54px;display:flex;align-items:center;justify-content:center;background:white;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,0.1);flex-shrink:0;">🔑</span>
+      <div style="flex:1;text-align:left;">
+        <div style="font-size:16px;font-weight:800;color:#1e1b4b;margin-bottom:3px;">代車管理</div>
+        <div style="font-size:12px;color:#6b7280;">代車・レンタカー状況</div>
+      </div>
+      <span style="color:#d97706;font-size:24px;font-weight:300;">›</span>
+    </button>
+    <button onclick="mobileGo('notes')" style="display:flex;align-items:center;gap:16px;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:2px solid #86efac;border-radius:18px;padding:18px 20px;cursor:pointer;text-align:left;font-family:inherit;box-shadow:0 4px 14px rgba(0,0,0,0.08);width:100%;">
+      <span style="font-size:36px;width:54px;height:54px;display:flex;align-items:center;justify-content:center;background:white;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,0.1);flex-shrink:0;">📋</span>
+      <div style="flex:1;text-align:left;">
+        <div style="font-size:16px;font-weight:800;color:#1e1b4b;margin-bottom:3px;">備考・メモ</div>
+        <div style="font-size:12px;color:#6b7280;">日次メモ・連絡事項</div>
+      </div>
+      <span style="color:#16a34a;font-size:24px;font-weight:300;">›</span>
+    </button>
+  </div>
+</div>
+<script>
+(function(){
+  var overlay = document.getElementById('mobile-card-overlay');
+  var DAYS = ['日','月','火','水','木','金','土'];
+  var today = new Date();
+  document.getElementById('mobile-date-label').textContent =
+    (today.getMonth()+1)+'月'+today.getDate()+'日（'+DAYS[today.getDay()]+'） メニューを選択してください';
+
+  // ログイン検知：Reactがレンダリングした後にユーザー名を取得
+  function watchLogin() {
+    var interval = setInterval(function(){
+      // ログイン後にReactがユーザー名を表示するエリアを探す
+      var logoutBtn = document.querySelector('button[title="ログアウト"]');
+      var userEl = document.querySelector('.user-name-display');
+      if (logoutBtn) {
+        // ログイン済み → オーバーレイを表示
+        overlay.classList.remove('hidden');
+        clearInterval(interval);
+        // ログアウトを検知
+        logoutBtn.addEventListener('click', function(){
+          setTimeout(function(){ overlay.classList.remove('hidden'); }, 300);
+        });
+      }
+    }, 500);
+  }
+  watchLogin();
+
+  window.mobileGo = function(section) {
+    overlay.classList.add('hidden');
+    // Reactのナビボタンをクリックする
+    setTimeout(function(){
+      var btns = document.querySelectorAll('button');
+      var labels = {
+        calendar: 'カレンダー',
+        schedule: 'スケジュール',
+        loaner: '代車管理',
+        notes: 'カレンダー'
+      };
+      var target = labels[section];
+      for (var i=0; i<btns.length; i++) {
+        if (btns[i].textContent.trim().indexOf(target) >= 0 && btns[i].offsetParent !== null) {
+          btns[i].click();
+          break;
+        }
+      }
+    }, 100);
+  };
+
+  window.mobileSetStore = function(store) {
+    var btns = document.querySelectorAll('button');
+    var label = store === 'honten' ? '本店' : '三田店';
+    for (var i=0; i<btns.length; i++) {
+      if (btns[i].textContent.trim() === label && btns[i].offsetParent !== null) {
+        btns[i].click();
+        break;
+      }
+    }
+  };
+
+  // ← ホームボタン用：window.mobileShowHome
+  window.mobileShowHome = function() {
+    overlay.classList.remove('hidden');
+    window.scrollTo(0,0);
+  };
+})();
+</script>
+<!-- ===== モバイルカードホームここまで ===== -->
 </body>
 </html>
