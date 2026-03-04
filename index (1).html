@@ -18,8 +18,7 @@
 const { useState, useEffect, useLayoutEffect, useRef, useCallback, memo, useMemo } = React;
 
 
-// Lucide icon shims (SVG)
-const iconStyle = (size=16) => ({width:size,height:size,display:'inline-block',verticalAlign:'middle'});
+const iconStyle = (size=16) => ({width:size,height:size,display:'inline-block',verticalAlign:'middle',flexShrink:0});
 const Calendar = ({size=16,color='currentColor',...p}) => <svg {...p} style={iconStyle(size)} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>;
 const Car = ({size=16,color='currentColor',...p}) => <svg {...p} style={iconStyle(size)} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2"><path d="M5 17H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1l2-4h10l2 4h1a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="16.5" cy="17.5" r="2.5"/></svg>;
 const Clock = ({size=16,color='currentColor',...p}) => <svg {...p} style={iconStyle(size)} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>;
@@ -39,6 +38,9 @@ const Eye = ({size=16,color='currentColor',...p}) => <svg {...p} style={iconStyl
 const PlusSquare = ({size=16,color='currentColor',...p}) => <svg {...p} style={iconStyle(size)} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>;
 const MinusSquare = ({size=16,color='currentColor',...p}) => <svg {...p} style={iconStyle(size)} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="8" y1="12" x2="16" y2="12"/></svg>;
 
+import { Calendar, Car, Clock, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, ChevronUp,
+         X, Settings, LogOut, Lock, Search, ZoomIn, ZoomOut,
+         Eye, PlusSquare, MinusSquare } from 'lucide-react';
 
 class ErrorBoundary extends React.Component {
   constructor(props){super(props);this.state={error:null};}
@@ -308,7 +310,13 @@ const GAS_READY = GAS_URL !== 'YOUR_GAS_URL_HERE' && GAS_URL !== '';
 const sGet = async(k) => {
   if (!GAS_READY) return null;
   try {
-    const r = await fetch(`${GAS_URL}?key=${encodeURIComponent(k)}`, {cache:'no-store'});
+    // GASはリダイレクトするため直接fetchではCORSエラーになる
+    // GASのURLにno-redirect用パラメータを付けて直接エンドポイントにアクセス
+    const r = await fetch(`${GAS_URL}?key=${encodeURIComponent(k)}`, {
+      cache: 'no-store',
+      redirect: 'follow',
+    });
+    if (!r.ok) return null;
     const t = await r.text();
     if (!t || t === 'null' || t.startsWith('error:')) return null;
     return JSON.parse(t);
