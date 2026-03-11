@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hub a Nice Day v64</title>
+  <title>Hub a Nice Day v69</title>
   <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
@@ -260,7 +260,7 @@ const dateStrToLabel = (s) => {
 };
 // ── 列キーワードマップ（ヘッダー自動検出用） ─────────────────
 const COL_KEYWORDS = {
-  inspDate:   ['点検満了','満了日','点検日','車検満了','有効期限','検査満了'],
+  inspDate:   ['点検満期日','満期日','点検満了','満了日','点検日','車検満了','有効期限','検査満了'],
   name:       ['氏名','名前','顧客名','お名前','名称'],
   no:         ['no','no.','番号','顧客番号','管理番号'],
   carModel:   ['車種','車種名','型式','車名'],
@@ -322,7 +322,22 @@ const parseCustExcel = (wb) => {
         }
       }
     }
-    if(hits>=3 && cand.name!=null){ headerIdx=ri; colMap=cand; break; }
+    if(hits>=3 && cand.name!=null){
+      headerIdx=ri;
+      // 「予約」ヘッダーが2列ある場合（K列とM列どちらも'予約'）の重複修正
+      if(cand.reserve1 != null && cand.reserve1===cand.reserve2){
+        const reserveCols=[];
+        for(let ci=0; ci<row.length; ci++){
+          if(norm(row[ci])==='予約') reserveCols.push(ci);
+        }
+        if(reserveCols.length>=2){ cand.reserve1=reserveCols[0]; cand.reserve2=reserveCols[1]; }
+        else if(reserveCols.length===1){
+          if(cand.mailing2!=null&&reserveCols[0]>cand.mailing2) cand.reserve2=reserveCols[0];
+          else cand.reserve1=reserveCols[0];
+        }
+      }
+      colMap=cand; break;
+    }
   }
   // フォールバック：固定列（CUST_COLS定義と同じ、0始まり）
   if(headerIdx<0){
@@ -380,9 +395,9 @@ const parseCustExcel = (wb) => {
 };
 
 // ── DateTip: MM/DD表示 + ホバーで YYYY/MM/DD 吹き出し ───────────
-const DateTip = ({dateStr, style={}}) => {
+const DateTip = ({dateStr, style={}, emptyText='—'}) => {
   const [show, setShow] = useState(false);
-  if(!dateStr||String(dateStr).trim()==='') return <span style={{color:'#cbd5e1',...style}}>—</span>;
+  if(!dateStr||String(dateStr).trim()==='') return <span style={{color:'#cbd5e1',...style}}>{emptyText}</span>;
   const s=String(dateStr).trim();
   const m=s.match(/(\d{4})[\/\-年](\d{1,2})[\/\-月](\d{1,2})/);
   if(!m) return <span style={style}>{s}</span>;
@@ -576,6 +591,9 @@ const CustomerListView = memo(({custFiles, setCustFiles, onOpenBooking, onCustBo
       course:courseTextToId(cust.course),tokuten:cust.tokuten||'-',
       loaner:'',loanerId:null,rentalLabel:'',rentalCarId:null,time:'',note:cust.note||'',
       bookingStatus:'provisional',_idx:idx,
+      // 顧客リスト行のメタ情報（受注日書き込みに使用）
+      _custMonth:cust._month, _custRowIdx:cust._idx,
+      _mailing1:cust.mailing1, _mailing2:cust.mailing2,
     });
   };
 
@@ -589,7 +607,12 @@ const CustomerListView = memo(({custFiles, setCustFiles, onOpenBooking, onCustBo
       return;
     }
     const fn = onCustEditBooking||onOpenBooking;
-    fn('insp',booking.dk,booking.idx,null,booking.row);
+    fn('insp',booking.dk,booking.idx,null,{
+      ...booking.row,
+      // 顧客リスト行のメタ情報（受注日書き込みに使用）
+      _custMonth:cust._month, _custRowIdx:cust._idx,
+      _mailing1:cust.mailing1, _mailing2:cust.mailing2,
+    });
   };
 
   // ── スケジュールへ移動 ────────────────────────────────────────
@@ -857,7 +880,7 @@ const CustomerListView = memo(({custFiles, setCustFiles, onOpenBooking, onCustBo
 
                     {/* 点検満了日 */}
                     <td style={{...TD,textAlign:'center',fontWeight:700}}>
-                      <DateTip dateStr={c.inspDate}/>
+                      <DateTip dateStr={c.inspDate} emptyText=''/>
                     </td>
 
                     {/* 名称 */}
@@ -2777,7 +2800,7 @@ const SetItemEditModal=memo(({isOpen,onClose,items,onSave})=>{
   );
 });
 
-const BookingModal=memo(({isOpen,onClose,type,initialData,isNew,dateLabel,timeSlot,onSave,onDelete,onOpenLoanerPicker,pendingLoanerId,pendingRentalId,pendingRentalRec,rentalCarsData,loanerRes,modalDk,onDeleteLoaner,currentUser,setItems,onOpenSetItemEdit,allCars})=>{
+const BookingModal=memo(({isOpen,onClose,type,initialData,isNew,dateLabel,timeSlot,onSave,onDelete,onOpenLoanerPicker,pendingLoanerId,pendingRentalId,pendingRentalRec,rentalCarsData,loanerRes,modalDk,onDeleteLoaner,currentUser,setItems,onOpenSetItemEdit,allCars,fromCustList})=>{
   const [form,setForm]=useState(initialData);
   const [staffInput,setStaffInput]=useState('');
   const [showStaff,setShowStaff]=useState(false);
@@ -2827,6 +2850,14 @@ const BookingModal=memo(({isOpen,onClose,type,initialData,isNew,dateLabel,timeSl
       if(!form.work){alert('作業内容を選択してください');workRef.current?.focus();return;}
     }
     onSave(form);
+  };
+  // 顧客リストからの仮予約/本予約ボタン用
+  const handleSaveWithStatus=(status)=>{
+    if(!form.name){alert('氏名を入力してください');nameRef.current?.focus();return;}
+    if(!form.carType){alert('車種を入力してください');carRef.current?.focus();return;}
+    if(!form.course){alert('コースを選択してください');return;}
+    if(!form.time){alert('入庫時間を入力してください');timeRef.current?.focus();return;}
+    onSave({...form, bookingStatus:status});
   };
   const handleDelete=()=>{onDelete();};
   const handleStaffBlur=()=>{const r=resolveStaff(staffInput);setStaffInput(r);setForm(p=>({...p,staff:r}));};
@@ -3075,33 +3106,59 @@ const BookingModal=memo(({isOpen,onClose,type,initialData,isNew,dateLabel,timeSl
           </div>
           {/* ボタン */}
           <div style={{display:'flex',flexDirection:'column',gap:8,paddingBottom:28}}>
-            {/* 車検モーダル：ステータスはリスト画面で管理（モーダルには表示のみ） */}
-            {isInsp&&(()=>{
-              const st=form.bookingStatus||'provisional';
-              if(st==='confirmed') return(
-                <div style={{display:'flex',alignItems:'center',gap:6,padding:'8px 14px',
-                  background:'#bae6fd',border:'2px solid #38bdf8',borderRadius:8,
-                  color:'#075985',fontWeight:700,fontSize:12}}>
-                  ✓ 車検日確定済み
-                  <span style={{marginLeft:'auto',fontSize:10,fontWeight:400,opacity:.8}}>リスト画面で管理</span>
+            {isInsp && fromCustList ? (
+              /* ── 顧客リストからの場合：仮予約・本予約の2ボタン ── */
+              <>
+                <div style={{padding:'8px 12px',background:'#f8fafc',border:'1px solid #e2e8f0',borderRadius:8,fontSize:11,color:'#475569',textAlign:'center'}}>
+                  💡 <b>仮予約</b>→スケジュール仮登録　<b>本予約確定</b>→受注日をリストに記録
                 </div>
-              );
-              return(
-                <div style={{display:'flex',alignItems:'center',gap:6,padding:'8px 14px',
-                  background:'#dcfce7',border:'2px solid #4ade80',borderRadius:8,
-                  color:'#166534',fontWeight:700,fontSize:12}}>
-                  📋 仮予約
-                  <span style={{marginLeft:'auto',fontSize:10,fontWeight:400,opacity:.8}}>確定はリスト画面から</span>
+                <div style={{display:'flex',gap:8}}>
+                  <button onClick={()=>handleSaveWithStatus('provisional')}
+                    style={{flex:1,padding:'13px 0',background:'linear-gradient(135deg,#16a34a,#15803d)',color:'white',
+                      border:'none',borderRadius:10,fontWeight:900,fontSize:14,cursor:'pointer',
+                      boxShadow:'0 3px 10px rgba(22,163,74,.3)'}}>
+                    📋 仮予約
+                  </button>
+                  <button onClick={()=>handleSaveWithStatus('confirmed')}
+                    style={{flex:1,padding:'13px 0',background:'linear-gradient(135deg,#1d4ed8,#1e40af)',color:'white',
+                      border:'none',borderRadius:10,fontWeight:900,fontSize:14,cursor:'pointer',
+                      boxShadow:'0 3px 10px rgba(29,78,216,.3)'}}>
+                    ✅ 本予約確定
+                  </button>
                 </div>
-              );
-            })()}
-            <button onClick={handleSave}
-              style={{width:'100%',padding:'14px 0',
-                background:isInsp?'linear-gradient(135deg,#4338ca,#6d28d9)':'linear-gradient(135deg,#0e7490,#0891b2)',
-                color:'white',border:'none',borderRadius:10,fontWeight:900,fontSize:15,
-                cursor:'pointer',boxShadow:'0 4px 15px rgba(0,0,0,.2)',letterSpacing:'.5px'}}>
-              {isInsp?(isNew?'📋 仮予約として登録':'💾 内容を保存する'):'✅ 予約確定'}
-            </button>
+              </>
+            ):(
+              /* ── スケジュール画面からの通常ボタン ── */
+              <>
+                {/* 車検モーダル：ステータスはリスト画面で管理（モーダルには表示のみ） */}
+                {isInsp&&(()=>{
+                  const st=form.bookingStatus||'provisional';
+                  if(st==='confirmed') return(
+                    <div style={{display:'flex',alignItems:'center',gap:6,padding:'8px 14px',
+                      background:'#bae6fd',border:'2px solid #38bdf8',borderRadius:8,
+                      color:'#075985',fontWeight:700,fontSize:12}}>
+                      ✓ 車検日確定済み
+                      <span style={{marginLeft:'auto',fontSize:10,fontWeight:400,opacity:.8}}>リスト画面で管理</span>
+                    </div>
+                  );
+                  return(
+                    <div style={{display:'flex',alignItems:'center',gap:6,padding:'8px 14px',
+                      background:'#dcfce7',border:'2px solid #4ade80',borderRadius:8,
+                      color:'#166534',fontWeight:700,fontSize:12}}>
+                      📋 仮予約
+                      <span style={{marginLeft:'auto',fontSize:10,fontWeight:400,opacity:.8}}>確定はリスト画面から</span>
+                    </div>
+                  );
+                })()}
+                <button onClick={handleSave}
+                  style={{width:'100%',padding:'14px 0',
+                    background:isInsp?'linear-gradient(135deg,#4338ca,#6d28d9)':'linear-gradient(135deg,#0e7490,#0891b2)',
+                    color:'white',border:'none',borderRadius:10,fontWeight:900,fontSize:15,
+                    cursor:'pointer',boxShadow:'0 4px 15px rgba(0,0,0,.2)',letterSpacing:'.5px'}}>
+                  {isInsp?(isNew?'📋 仮予約として登録':'💾 内容を保存する'):'✅ 予約確定'}
+                </button>
+              </>
+            )}
             <div style={{display:'flex',gap:8}}>
               {/* 削除：isNew=false かつ データあり の場合のみ表示 */}
               {canDelete&&(
@@ -4328,6 +4385,7 @@ function AppInner() {
   const [modalData,  setModalData] =useState(blankInsp());
   const [modalIsNew, setModalIsNew]=useState(false);
   const [curLockKey, setCurLockKey]=useState(null);
+  const [fromCustList, setFromCustList]=useState(false); // 顧客リストから開いたモーダル
 
   const [pickMode,       setPickMode]      =useState(false);
   const [pendingLoanerId,setPendingLoanerId]=useState(null);
@@ -4570,7 +4628,7 @@ function AppInner() {
     setModalData({...prefilledData,_idx:idx||0,bookingStatus:'provisional'});
     setPendingLoanerId(null);setPendingRentalId(null);setPendingRentalRec(null);setPickMode(false);
     setSelDate(new Date(y,m-1,d));
-    // setView('schedule') しない → リスト画面のままモーダルを開く
+    setFromCustList(true); // ← 顧客リストから開いた
     setModalOpen(true);
   },[currentUser,locks,acquireLock]);
 
@@ -4602,7 +4660,7 @@ function AppInner() {
     setPendingLoanerId(null);setPendingRentalId(null);setPendingRentalRec(null);setPickMode(false);
     const [dy,dm,dd]=dk.split('-').map(Number);
     setSelDate(new Date(dy,dm-1,dd));
-    // setView('schedule') しない → リスト画面のままモーダルを開く
+    setFromCustList(true); // ← 顧客リストから開いた
     setModalOpen(true);
   },[currentUser,locks,acquireLock]);
 
@@ -4610,11 +4668,32 @@ function AppInner() {
     releaseLock(curLockKey);setCurLockKey(null);setModalOpen(false);setPickMode(false);
     setPendingLoanerData(null);setPendingLoanerId(null);
     setPendingRentalId(null);setPendingRentalRec(null);
+    setFromCustList(false);
   },[curLockKey,releaseLock]);
 
   const handleSaveModal=useCallback((formData)=>{
-    // _idx/_slot/_slotNewは内部管理フィールドなので保存データから除去
-    const {_idx,_slot,...cleanData}=formData;
+    // _idx/_slot/_custMeta は内部管理フィールドなので保存データから除去
+    const {_idx,_slot,_custMonth,_custRowIdx,_mailing1,_mailing2,...cleanData}=formData;
+
+    // ★ 本予約（顧客リストから）→ custFiles の 予約①or② 受注日を書き込む
+    if(fromCustList && cleanData.bookingStatus==='confirmed' && _custMonth && _custRowIdx!=null){
+      const today=new Date();
+      const todayStr=`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+      setCustFiles(prev=>{
+        const monthRows=[...(prev[_custMonth]||[])];
+        if(!monthRows[_custRowIdx]) return prev;
+        const custRow={...monthRows[_custRowIdx]};
+        const m1=_mailing1||custRow.mailing1||'';
+        const m2=_mailing2||custRow.mailing2||'';
+        // 投函日②以降なら予約②、そうでなければ予約①
+        if(m2&&todayStr>=m2){ custRow.reserve2=todayStr; }
+        else { custRow.reserve1=todayStr; }
+        monthRows[_custRowIdx]=custRow;
+        return{...prev,[_custMonth]:monthRows};
+      });
+    }
+
+    setFromCustList(false);
 
     // ★修正1: モーダル確定時にpendingLoanerDataをloanerResに書き込む
     if(pendingLoanerData){
@@ -4722,7 +4801,7 @@ function AppInner() {
     const keyToRelease=curLockKey;
     setCurLockKey(null);
     setTimeout(()=>releaseLock(keyToRelease),200);
-  },[modalType,modalDk,modalIdx,modalSlot,vsId,curLockKey,releaseLock,setInspData,setSchedData,setLoanerRes,schedRestrictions,setModalOpen,inspLimits,pendingRentalId,pendingRentalRec,pendingLoanerId,pendingLoanerData,dynRentalCars]);
+  },[modalType,modalDk,modalIdx,modalSlot,vsId,curLockKey,releaseLock,setInspData,setSchedData,setLoanerRes,schedRestrictions,setModalOpen,inspLimits,pendingRentalId,pendingRentalRec,pendingLoanerId,pendingLoanerData,dynRentalCars,fromCustList,setCustFiles]);
 
   const handleDeleteModal=useCallback(()=>{
     // bookingKeyを特定してloanerRes・rentalResも連動削除
@@ -5981,7 +6060,8 @@ function AppInner() {
         currentUser={currentUser}
         setItems={setItems}
         onOpenSetItemEdit={()=>setShowSetItemEdit(true)}
-        allCars={currentLoaners}/>
+        allCars={currentLoaners}
+        fromCustList={fromCustList}/>
 
       {/* -- 休業日設定 -- */}
       <HolidayModal isOpen={showHoliday} onClose={()=>setShowHoliday(false)}
