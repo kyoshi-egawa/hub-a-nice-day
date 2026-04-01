@@ -86,37 +86,44 @@ const STORES = [
 
 // -- 業務バッジ定義 --
 const BADGES = [
-  {id:'president', label:'代表',        icon:'代', shape:'square', color:'#92400e', bg:'#fef3c7', desc:'代表取締役'},
-  {id:'inspector', label:'検査員',      icon:'検', shape:'square', color:'#7c3aed', bg:'#ede9fe', desc:'車検適合書を発行できる'},
-  {id:'mechanic',  label:'一般整備士',  icon:'整', shape:'square', color:'#2563eb', bg:'#eff6ff', desc:'一般整備・修理'},
-  {id:'bodywork',  label:'鈑金塗装技士',icon:'BP', shape:'square', color:'#d97706', bg:'#fffbeb', desc:'鈑金・塗装専門'},
-  {id:'office',    label:'事務員',      icon:'事', shape:'square', color:'#059669', bg:'#ecfdf5', desc:'受付・事務処理'},
-  {id:'assistant', label:'整備補助員',  icon:'助', shape:'square', color:'#dc2626', bg:'#fef2f2', desc:'外国人助っ人'},
-  {id:'sales',     label:'販売',        icon:'販', shape:'square', color:'#0891b2', bg:'#ecfeff', desc:'車両販売・商談'},
+  {id:'president',  label:'代表',        icon:'代', shape:'square', color:'#92400e', bg:'#fef3c7', desc:'代表取締役'},
+  {id:'manager',    label:'店長',        icon:'店', shape:'square', color:'#0f766e', bg:'#f0fdfa', desc:'店舗責任者'},
+  {id:'foreman',    label:'工場長',      icon:'工', shape:'square', color:'#1e40af', bg:'#eff6ff', desc:'工場管理責任者'},
+  {id:'inspector',  label:'検査員',      icon:'検', shape:'square', color:'#7c3aed', bg:'#ede9fe', desc:'車検適合書を発行できる'},
+  {id:'mechanic',   label:'一般整備士',  icon:'整', shape:'square', color:'#2563eb', bg:'#eff6ff', desc:'一般整備・修理'},
+  {id:'bodywork',   label:'鈑金塗装技士',icon:'BP', shape:'square', color:'#d97706', bg:'#fffbeb', desc:'鈑金・塗装専門'},
+  {id:'office',     label:'事務員',      icon:'事', shape:'square', color:'#059669', bg:'#ecfdf5', desc:'受付・事務処理'},
+  {id:'assistant',  label:'整備補助員',  icon:'助', shape:'square', color:'#dc2626', bg:'#fef2f2', desc:'外国人助っ人'},
+  {id:'sales',      label:'販売',        icon:'販', shape:'square', color:'#0891b2', bg:'#ecfeff', desc:'車両販売・商談'},
 ];
-const getBadge = (id) => BADGES.find(b=>b.id===id)||BADGES[1];
+const getBadge = (id) => BADGES.find(b=>b.id===id)||BADGES[3];
 
 // -- 対応可能業務（capabilities）定義 --
 const CAPABILITIES = [
-  {id:'insp_front', label:'車検フロント対応', desc:'車検受付・お客様対応・同時入庫カウント対象', icon:'🔑', default:true},
-  {id:'sched_front', label:'整備フロント対応', desc:'整備受付・お客様対応', icon:'🔧', default:true},
-  {id:'insp_work', label:'車検作業', desc:'車検整備作業', icon:'🚗', default:true},
-  {id:'sched_work', label:'整備作業', desc:'一般整備作業', icon:'🔩', default:true},
+  {id:'insp_front',  label:'車検フロント対応', desc:'車検受付・お客様対応・同時入庫カウント対象', icon:'🔑', default:true},
+  {id:'sched_front', label:'整備フロント対応', desc:'整備受付・お客様対応',                       icon:'🔧', default:true},
+  {id:'insp_work',   label:'車検作業',         desc:'車検整備作業',                               icon:'🚗', default:true},
+  {id:'sched_work',  label:'整備作業',         desc:'一般整備作業',                               icon:'🔩', default:true},
+  {id:'insp_check',  label:'検査員',           desc:'車検適合判定・検査印を押せる',               icon:'🔍', default:false},
 ];
 const getDefaultCapabilities = (badge) => {
   // 鈑金塗装技士・整備補助員はフロント対応不可がデフォルト
   if(badge==='bodywork'||badge==='assistant'){
-    return {insp_front:false, sched_front:false, insp_work:true, sched_work:true};
+    return {insp_front:false, sched_front:false, insp_work:true, sched_work:true, insp_check:false};
   }
-  // 事務員は整備作業不可がデフォルト
-  if(badge==='office'){
-    return {insp_front:true, sched_front:true, insp_work:false, sched_work:false};
+  // 事務員・販売はフロント対応のみ
+  if(badge==='office'||badge==='sales'){
+    return {insp_front:true, sched_front:true, insp_work:false, sched_work:false, insp_check:false};
   }
-  // 販売はフロント対応のみ
-  if(badge==='sales'){
-    return {insp_front:true, sched_front:true, insp_work:false, sched_work:false};
+  // 検査員バッジは検査員ONがデフォルト
+  if(badge==='inspector'){
+    return {insp_front:true, sched_front:true, insp_work:true, sched_work:true, insp_check:true};
   }
-  return {insp_front:true, sched_front:true, insp_work:true, sched_work:true};
+  // 店長・工場長は全対応がデフォルト
+  if(badge==='manager'||badge==='foreman'){
+    return {insp_front:true, sched_front:true, insp_work:true, sched_work:true, insp_check:false};
+  }
+  return {insp_front:true, sched_front:true, insp_work:true, sched_work:true, insp_check:false};
 };
 
 // バッジアイコンレンダラー（文字アイコン）
