@@ -7101,16 +7101,17 @@ function AppInner() {
                         const allMapped=allRows.map((r,i)=>({...(r&&r.name?r:blankInsp()),_origIdx:i}));
                         // 台数制限取得（設定なければ6）
                         const dayInspLimit=inspLimits[dk]??6;
-                        // キャンセル除外・名前あり行を入力順（idx順）で並べる
-                        // ※承認済み・承認待ち問わず入力順を維持し、先着6台が上段固定
-                        const validRows=allMapped
-                          .filter(r=>!!(r.name)&&r.bookingStatus!=='cancelled')
-                          .sort((a,b)=>a._origIdx-b._origIdx);
+                        // キャンセル除外・名前あり行
+                        const validRows=allMapped.filter(r=>!!(r.name)&&r.bookingStatus!=='cancelled');
 
-                        // 先着dayInspLimit台 → 上段（承認済みフラグに関わらず位置は変わらない）
-                        const normalRows=validRows.slice(0,dayInspLimit);
-                        // dayInspLimit+1台目以降 → バナー下（承認済みでも位置は変わらない）
-                        const waitingRows=validRows.slice(dayInspLimit);
+                        // 上段6台：ログイン店舗優先・時刻順（sortFn）で選出
+                        const normalRows=validRows.slice().sort(sortFn).slice(0,dayInspLimit);
+                        const normalIdxSet=new Set(normalRows.map(r=>r._origIdx));
+
+                        // 下段7台目以降：上段に入らなかった行を時刻順（店舗関係なし）
+                        const waitingRows=validRows
+                          .filter(r=>!normalIdxSet.has(r._origIdx))
+                          .sort((a,b)=>timeToMin(a.time)-timeToMin(b.time));
 
                         // 追加行のインデックス
                         const usedIdxs=new Set(validRows.map(r=>r._origIdx));
@@ -7140,8 +7141,10 @@ function AppInner() {
                         waitingRows.forEach((row,pi)=>{
                           const origIdx=row._origIdx??pi;
                           const {_origIdx,...cleanRow}=row;
-                          // pendingApprovalフラグがなくても下段行は承認待ち表示にする
-                          const displayRow=cleanRow.pendingApproval||cleanRow.approved?cleanRow:{...cleanRow,pendingApproval:true};
+                          // 承認済み行はそのまま（承認済みバッジ）、未承認行は承認待ちフラグ付与
+                          const displayRow=cleanRow.approved
+                            ?{...cleanRow,pendingApproval:false}  // 承認済み：承認待ちバッジ消す
+                            :{...cleanRow,pendingApproval:true};  // 未承認：承認待ちバッジ表示
                           rows.push(
                             <InspRow key={`waiting-${origIdx}-${pi}`} row={displayRow} idx={origIdx} dispNo={normalRows.length+pi+1} dk={dk} onOpenModal={handleOpenModal} lockInfo={getInspLock(dk,origIdx)} loanerRes={loanerRes} vsId={vsId} onApprove={handleApprove} isOverLimit={false} setItems={setItems}/>
                           );
