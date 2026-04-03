@@ -3672,7 +3672,7 @@ const InspRow=memo(({row,idx,dispNo,dk,onOpenModal,lockInfo,loanerRes,vsId,onApp
   const pending=row.pendingApproval;
   const approved=row.approved;
   const canApprove=pending&&vsId==='honten';
-  const blocked=isOverLimit||locked||otherStore;
+  const blocked=(!isEmpty&&isOverLimit)||locked||otherStore;
   const isCancelled=row.bookingStatus==='cancelled';
 
   const noteQItems=setItems||[];
