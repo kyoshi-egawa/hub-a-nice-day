@@ -6435,7 +6435,7 @@ function AppInner() {
       <style>{GCSS}</style>
 
       {/* -- ヘッダー -- */}
-      <header ref={headerRef} style={{background:'rgba(255,255,255,0.97)',borderBottom:`3px solid ${vsStore.color}`,padding:'9px 18px',position:'sticky',top:0,zIndex:500,boxShadow:'0 4px 20px rgba(0,0,0,0.15)'}}>
+      <header ref={headerRef} style={{background:'rgba(255,255,255,0.97)',borderBottom:`3px solid ${vsStore.color}`,padding:'9px 18px',position:'fixed',top:0,left:0,right:0,zIndex:500,boxShadow:'0 4px 20px rgba(0,0,0,0.15)'}}>
         {(()=>{
           const userStore=STORES.find(s=>s.id===(currentUser?.store?.id||'honten'))||STORES[0];
           return(
@@ -6537,8 +6537,11 @@ function AppInner() {
         {exportStatus==='err'&&(<div style={{position:'fixed',top:70,right:20,zIndex:9999,background:'#dc2626',color:'white',borderRadius:10,padding:'12px 18px',fontSize:13,fontWeight:700,boxShadow:'0 4px 20px rgba(0,0,0,0.25)'}}>✕ コピーに失敗しました<br/><span style={{fontWeight:400,fontSize:11,opacity:0.9}}>ブラウザのクリップボード権限を確認してください</span></div>)}
       </header>
 
-      <main style={{maxWidth:1700,margin:'0 auto',padding:'20px 16px',
-        ...(view==='schedule'?{height:'calc(100vh - var(--header-h,90px))',overflow:'hidden',padding:'0',display:'flex',flexDirection:'column'}:{})}}>
+      <main style={{maxWidth:1700,margin:'0 auto',
+        ...(view==='schedule'
+          ? {height:'calc(100vh - var(--header-h,90px))',overflow:'hidden',padding:'0',paddingTop:'var(--header-h,90px)',display:'flex',flexDirection:'column'}
+          : {padding:'20px 16px',paddingTop:'calc(var(--header-h,90px) + 20px)'}
+        )}}>
 
         {/* -- カレンダー -- */}
         {view==='calendar'&&(()=>{
@@ -6570,9 +6573,9 @@ function AppInner() {
           }
           const total=cnt[1]+cnt[2]+cnt[3];
           return (
-            <div style={{background:'white',borderRadius:13,padding:18,boxShadow:'0 10px 40px rgba(0,0,0,.18)',borderTop:`4px solid ${vsStore.color}`,minHeight:'calc(100vh - var(--header-h,90px) - 40px)',display:'flex',flexDirection:'column'}}>
+            <div style={{background:'white',borderRadius:13,boxShadow:'0 10px 40px rgba(0,0,0,.18)',borderTop:`4px solid ${vsStore.color}`,height:'calc(100vh - var(--header-h,90px) - 40px)',display:'flex',flexDirection:'column',overflow:'hidden'}}>
               {/* -- ナビ＋集計を1行に統合 -- */}
-              <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:14,gap:8,flexWrap:'wrap'}}>
+              <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:0,gap:8,flexWrap:'wrap',flexShrink:0,padding:'14px 18px 10px',borderBottom:'1px solid #e5e7eb'}}>
                 {/* 左：月集計 or スタッフフィルター */}
                 <div style={{display:'flex',gap:8,flexWrap:'wrap',alignItems:'center',fontSize:12,flex:1,minWidth:0}}>
                 {calView==='insp'?(
@@ -6675,7 +6678,7 @@ function AppInner() {
               </div>
               {/* --- グリッド（calView切替） --- */}
               {calView==='insp'?(
-              <div style={{border:'2px solid #e5e7eb',borderRadius:9,overflow:'hidden',display:'flex',flexDirection:'column',flex:1,minHeight:0}}>
+              <div style={{border:'2px solid #e5e7eb',borderRadius:9,margin:'0 18px 18px',overflow:'hidden',display:'flex',flexDirection:'column',flex:1,minHeight:0}}>
                 <div style={{display:'grid',gridTemplateColumns:'repeat(7,1fr)',background:'#eef2ff',borderBottom:'1px solid #d1d5db',flexShrink:0}}>
                   {DOW.map((d,i)=>(
                     <div key={i} style={{padding:'8px 0',textAlign:'center',fontWeight:700,fontSize:13,color:i===0?'#dc2626':i===6?'#1d4ed8':'#374151'}}>{d}</div>
