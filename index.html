@@ -6539,8 +6539,8 @@ function AppInner() {
 
       <main style={{maxWidth:1700,margin:'0 auto',
         ...(view==='schedule'
-          ? {height:'calc(100vh - var(--header-h,90px))',overflow:'hidden',padding:'0',paddingTop:'var(--header-h,90px)',display:'flex',flexDirection:'column'}
-          : {padding:'20px 16px',paddingTop:'calc(var(--header-h,90px) + 20px)'}
+          ? {height:'calc(100vh - var(--header-h,90px))',overflow:'hidden',padding:'0',marginTop:'var(--header-h,90px)',display:'flex',flexDirection:'column'}
+          : {padding:'20px 16px',paddingTop:'20px',marginTop:'var(--header-h,90px)'}
         )}}>
 
         {/* -- カレンダー -- */}
