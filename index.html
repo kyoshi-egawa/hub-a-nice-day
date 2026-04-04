@@ -6539,8 +6539,8 @@ function AppInner() {
 
       <main style={{maxWidth:1700,margin:'0 auto',
         ...(view==='schedule'
-          ? {height:'calc(100vh - var(--header-h,90px))',overflow:'hidden',padding:'0',marginTop:'var(--header-h,90px)',display:'flex',flexDirection:'column'}
-          : {padding:'20px 16px',paddingTop:'20px',marginTop:'var(--header-h,90px)'}
+          ? {height:'100vh',overflow:'hidden',padding:'0',paddingTop:'var(--header-h,90px)',display:'flex',flexDirection:'column'}
+          : {padding:'20px 16px',paddingTop:'calc(var(--header-h,90px) + 20px)'}
         )}}>
 
         {/* -- カレンダー -- */}
@@ -6878,7 +6878,7 @@ function AppInner() {
         {view==='schedule'&&_selDate&&(()=>{
           const inspRows=getInsps(dk);
           return (
-            <div style={{background:'white',borderRadius:0,boxShadow:'none',borderTop:`4px solid ${vsStore.color}`,height:'calc(100vh - var(--header-h,90px))',display:'flex',flexDirection:'column',overflow:'hidden'}}>
+            <div style={{background:'white',borderRadius:0,boxShadow:'none',borderTop:`4px solid ${vsStore.color}`,flex:1,display:'flex',flexDirection:'column',overflow:'hidden',minHeight:0}}>
               <div id="sec-top"/>
               {/* 固定ヘッダー：日付ナビ〜スタッフバー */}
               <div ref={el=>{if(el){const h=el.offsetHeight;document.documentElement.style.setProperty('--sticky-nav-h',h+'px');}}}
@@ -6964,7 +6964,7 @@ function AppInner() {
                 })()}
               </div>
 
-              <div style={{padding:'8px 18px 4px 18px',flex:1,minHeight:0,display:'flex',flexDirection:'column'}}>
+              <div style={{padding:'8px 18px 4px 18px',flex:1,minHeight:0,display:'flex',flexDirection:'column',overflowY:'auto'}}>
               {/* 編集中ロック表示 */}
               {(()=>{
                 const al=Object.entries(locks).filter(([k,v])=>k.includes(dk)&&v.lockedBy!==currentUser.name);
