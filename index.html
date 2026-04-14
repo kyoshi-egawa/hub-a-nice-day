@@ -28,6 +28,32 @@
 <body>
   <div id="root"></div>
   <script type="text/babel" data-presets="react">
+
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║  Hub a Nice Day v1.0 - 開発者ガイド                             ║
+// ║  作成: 2026-04  ベースライン確定日: 2026-04-04                  ║
+// ╠══════════════════════════════════════════════════════════════════╣
+// ║  【リポジトリ】                                                  ║
+// ║  本番: kyoshi-egawa/hub-a-nice-day                              ║
+// ║  開発: kyoshi-egawa/hub-a-nice-day-dev                          ║
+// ╠══════════════════════════════════════════════════════════════════╣
+// ║  【開発フロー】                                                  ║
+// ║  1. hub-a-nice-day-dev で修正・テスト                           ║
+// ║  2. 動作確認OK → hub-a-nice-day（本番）に反映                  ║
+// ╠══════════════════════════════════════════════════════════════════╣
+// ║  【絶対に触ってはいけない箇所】                                  ║
+// ║  - BLOCK-B: sGet / sSet / GAS通信（データ消失リスク）           ║
+// ║  - BLOCK-C: InspRow / 7台目承認ロジック                         ║
+// ╠══════════════════════════════════════════════════════════════════╣
+// ║  【ブロック構成】                                                ║
+// ║  BLOCK-A: 設定値・定数      → 変更可能                          ║
+// ║  BLOCK-B: データ層・GAS通信 → 変更禁止                          ║
+// ║  BLOCK-C: コアロジック      → 変更禁止                          ║
+// ║  BLOCK-D: UIコンポーネント  → 変更可能                          ║
+// ║  BLOCK-E: 画面レイアウト    → 変更可能（要注意）                ║
+// ╚══════════════════════════════════════════════════════════════════╝
+
+
 const { useState, useEffect, useLayoutEffect, useRef, useCallback, memo, useMemo } = React;
 
 // ★ バージョン管理：アップデートのたびにここだけ変更する
@@ -49,6 +75,7 @@ const ChevronsRight = ({size=16,color='currentColor',...p}) => <svg {...p} style
 const ChevronUp = ({size=16,color='currentColor',...p}) => <svg {...p} style={iconStyle(size)} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2"><polyline points="18 15 12 9 6 15"/></svg>;
 const X = ({size=16,color='currentColor',...p}) => <svg {...p} style={iconStyle(size)} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>;
 const Settings = ({size=16,color='currentColor',...p}) => <svg {...p} style={iconStyle(size)} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>;
+const Users = ({size=16,color='currentColor',...p}) => <svg {...p} style={iconStyle(size)} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>;
 const LogOut = ({size=16,color='currentColor',...p}) => <svg {...p} style={iconStyle(size)} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>;
 const Lock = ({size=16,color='currentColor',...p}) => <svg {...p} style={iconStyle(size)} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>;
 const Search = ({size=16,color='currentColor',...p}) => <svg {...p} style={iconStyle(size)} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>;
@@ -85,6 +112,18 @@ const HOLIDAYS_2026 = new Set([
 const isHoliday = (y,m,d) => HOLIDAYS_2026.has(`${y}-${m+1}-${d}`);
 
 // 店舗定義
+
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║  BLOCK-A: 設定値・定数                                          ║
+// ║  【変更可能】ただし変更後は必ずdev環境でテストすること          ║
+// ║  含まれる内容:                                                  ║
+// ║  - STORES（店舗情報・カラー設定）                               ║
+// ║  - DEFAULT_STAFF_HONTEN / DEFAULT_STAFF_SANDA（スタッフ定義）   ║
+// ║  - COURSES（車検コース定義）                                    ║
+// ║  - TIME_SLOTS（タイムスロット）                                 ║
+// ║  - DEFAULT_LOANERS（代車デフォルト定義）                        ║
+// ╚══════════════════════════════════════════════════════════════════╝
+
 const STORES = [
   {id:'honten', name:'本店',  color:'#2563eb', bg:'#eff6ff', accent:'#1d4ed8'},
   {id:'sanda',  name:'三田店',color:'#dc2626', bg:'#fef2f2', accent:'#b91c1c'},
@@ -192,7 +231,7 @@ const WORKS = [
   {id:'M6',name:'メンパ6ヶ月点検'},{id:'N1',name:'新車1ヶ月点検'},{id:'N6',name:'新車6ヶ月点検'},
   {id:'B',name:'鈑金塗装'},{id:'商',name:'商談'},{id:'保',name:'保険'},{id:'試',name:'試乗'},{id:'納',name:'納車'},{id:'他',name:'その他'}
 ];
-const SHIMIS = [{id:'指',name:'指示書'},{id:'見',name:'見積'},{id:'両',name:'両方'}];
+const SHIMIS = [{id:'',name:'なし'},{id:'指',name:'指示書'},{id:'見',name:'見積'},{id:'両',name:'両方'}];
 
 // -- クイックアイテム（内容・備考欄へのクイック入力テキスト） --
 const DEFAULT_SET_ITEMS = [
@@ -616,6 +655,17 @@ const resolveOrderSlot = (orderDate, mailing2) => {
   return 'reserve1';
 };
 
+
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║  BLOCK-D: UIコンポーネント・モーダル                            ║
+// ║  【変更可能】dev環境でテスト後に本番反映すること                ║
+// ║  含まれる内容:                                                  ║
+// ║  - CustListModal（顧客リスト）                                  ║
+// ║  - BookingModal（予約入力フォーム）                             ║
+// ║  - MemoModal / DayOffModal（備考・休日設定）                    ║
+// ║  - StaffCalendarModal / InspLimitModal（設定系モーダル）        ║
+// ╚══════════════════════════════════════════════════════════════════╝
+
 const CustListModal = memo(({isOpen, onClose, mode:initMode, cust, existingData, currentUser, onSave, onCancelBooking, loanerRes={}, storeLoaners}) => {
   const [form, setForm] = useState({arrivalDate:'',orderDate:'',note:'',staff:'',course:0,tokuten:'-',store:'',loanerCarId:null,loanerLabel:'',loanerFromDate:'',loanerToDate:''});
   const [showLoanerPicker, setShowLoanerPicker] = useState(false);
@@ -703,7 +753,7 @@ const CustListModal = memo(({isOpen, onClose, mode:initMode, cust, existingData,
           setShowLoanerPicker(false);
         }}
       />
-      <div onClick={e=>e.stopPropagation()} className="slide-in"
+      <div onClick={e=>e.stopPropagation()} className="slide-in booking-modal-inner"
         style={{background:'white',width:'clamp(360px,90vw,560px)',height:'100vh',
           overflowY:'auto',boxShadow:'-8px 0 32px rgba(0,0,0,0.22)',
           borderLeft:'3px solid #4338ca',display:'flex',flexDirection:'column'}}>
@@ -1349,6 +1399,17 @@ const lockKey = (type,dk,idx,slot) => {
   return null;
 };
 const LOCK_TTL = 30*1000; // 30秒でロック期限切れ（ページ離脱時に自動解放）
+
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║  BLOCK-B: データ層・GAS通信                                     ║
+// ║  【変更禁止】ここを変更するとデータ消失・破損のリスクあり       ║
+// ║  含まれる内容:                                                  ║
+// ║  - STOR / GAS_URL / GAS_API_KEY（接続設定）                     ║
+// ║  - sGet / sSet（GAS読み書き）                                   ║
+// ║  - acquireLock / releaseLock（同時編集ロック）                  ║
+// ║  ⚠️  変更が必要な場合は必ずKyoshiに確認すること                ║
+// ╚══════════════════════════════════════════════════════════════════╝
+
 const STOR = 'hub-v8-';
 const storKey = (base, storeId) => `${STOR}${storeId}-${base}`;
 
@@ -2525,7 +2586,7 @@ const MemoModal=memo(({isNew,initContent,dateLabel,onSave,onDelete,onClose,setIt
   useEffect(()=>{setTimeout(()=>ref.current?.focus(),120);},[]);
   return (
     <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.35)',zIndex:1000,display:'flex',alignItems:'stretch',justifyContent:'flex-start'}} onClick={onClose}>
-      <div onClick={e=>e.stopPropagation()} className="slide-in"
+      <div onClick={e=>e.stopPropagation()} className="slide-in booking-modal-inner"
         style={{background:'white',width:'clamp(360px,90vw,560px)',height:'100vh',overflowY:'auto',boxShadow:'8px 0 32px rgba(0,0,0,0.22)',borderRight:'3px solid #f59e0b'}}>
         <div style={{background:'linear-gradient(135deg,#d97706,#f59e0b)',padding:'16px 20px',display:'flex',justifyContent:'space-between',alignItems:'center',position:'sticky',top:0,zIndex:20}}>
           <div>
@@ -3272,7 +3333,111 @@ const SetItemEditModal=memo(({isOpen,onClose,items,onSave,title})=>{
   );
 });
 
-const BookingModal=memo(({isOpen,onClose,type,initialData,isNew,dateLabel,timeSlot,onSave,onDelete,onOpenLoanerPicker,pendingLoanerId,pendingRentalId,pendingRentalRec,rentalCarsData,loanerRes,modalDk,modalIdx:modalIdxProp,onDeleteLoaner,currentUser,setItems,onOpenSetItemEdit,allCars,fromCustList,savedModalData})=>{
+
+// ── 車検カレンダーピッカー（顧客リストモーダル用）──
+const InspCalendarPicker=memo(({form,setForm,bmInspData,bmClosedDays,bmClosedDates,bmOverrideOpen,bmInspLimits})=>{
+  const [calMonth,setCalMonth]=useState(()=>{
+    if(form._bookingDate){const p=form._bookingDate.split('-');return new Date(Number(p[0]),Number(p[1])-1,1);}
+    return new Date();
+  });
+  const cy=calMonth.getFullYear(),cm=calMonth.getMonth();
+  const daysInMonth=new Date(cy,cm+1,0).getDate();
+  const first=new Date(cy,cm,1).getDay();
+  const weeks=[];let wk=Array(7).fill(null);
+  for(let d=1;d<=daysInMonth;d++){
+    const dow=(first+d-1)%7;wk[dow]=d;
+    if(dow===6){weeks.push([...wk]);wk=Array(7).fill(null);}
+  }
+  if(wk.some(x=>x!==null))weeks.push([...wk]);
+  const getDk=d=>`${cy}-${cm+1}-${d}`;
+  const getCount=d=>{
+    const rows=(bmInspData&&bmInspData[getDk(d)])||[];
+    return rows.filter(r=>r&&r.name&&!r.pendingApproval&&r.bookingStatus!=='cancelled').length;
+  };
+  const getLimit=d=>(bmInspLimits&&bmInspLimits[getDk(d)])||6;
+  const isClosed=d=>{
+    const date=new Date(cy,cm,d);
+    const days=Array.isArray(bmClosedDays)?bmClosedDays:[];
+    const dates=Array.isArray(bmClosedDates)?bmClosedDates:[];
+    const ov=Array.isArray(bmOverrideOpen)?bmOverrideOpen:[];
+    if(days.includes(date.getDay()))return true;
+    const ds=`${cy}-${String(cm+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    if(dates.includes(ds))return true;
+    return false;
+  };
+  const DOW_CAL=['日','月','火','水','木','金','土'];
+  const today=new Date();
+  return(
+    <div style={{border:'2px solid #e5e7eb',borderRadius:9,overflow:'hidden',fontSize:11}}>
+      {/* ナビ */}
+      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'8px 12px',background:'#f8fafc',borderBottom:'1px solid #e5e7eb'}}>
+        <button onClick={()=>setCalMonth(new Date(cy,cm-1,1))}
+          style={{padding:'3px 10px',border:'1px solid #d1d5db',borderRadius:6,background:'white',cursor:'pointer',fontSize:13}}>‹</button>
+        <span style={{fontWeight:800,color:'#1e1b4b',fontSize:13}}>{cy}年{cm+1}月</span>
+        <button onClick={()=>setCalMonth(new Date(cy,cm+1,1))}
+          style={{padding:'3px 10px',border:'1px solid #d1d5db',borderRadius:6,background:'white',cursor:'pointer',fontSize:13}}>›</button>
+      </div>
+      {/* 曜日ヘッダー */}
+      <div style={{display:'grid',gridTemplateColumns:'repeat(7,1fr)',background:'#eef2ff',borderBottom:'1px solid #e5e7eb'}}>
+        {DOW_CAL.map((d,i)=>(
+          <div key={d} style={{textAlign:'center',padding:'5px 0',fontWeight:700,fontSize:11,
+            color:i===0?'#dc2626':i===6?'#2563eb':'#374151'}}>{d}</div>
+        ))}
+      </div>
+      {/* 週グリッド */}
+      {weeks.map((wk,wi)=>(
+        <div key={wi} style={{display:'grid',gridTemplateColumns:'repeat(7,1fr)'}}>
+          {wk.map((d,di)=>{
+            if(!d)return<div key={di} style={{minHeight:52,borderTop:'1px solid #f3f4f6',borderLeft:di>0?'1px solid #f3f4f6':'none',background:'#f9fafb'}}/>;
+            const cnt=getCount(d);
+            const lmt=getLimit(d);
+            const closed=isClosed(d);
+            const isToday=d===today.getDate()&&cm===today.getMonth()&&cy===today.getFullYear();
+            const dateStr=`${cy}-${String(cm+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+            const isSel=form._bookingDate===dateStr;
+            const isFull=cnt>=lmt;
+            const numColor=di===0?'#dc2626':di===6?'#2563eb':'#111';
+            let bg='white';
+            if(isSel)bg='#dbeafe';
+            else if(closed)bg='repeating-linear-gradient(45deg,#f9fafb,#f9fafb 3px,#f3f4f6 3px,#f3f4f6 6px)';
+            else if(isFull)bg='#fef2f2';
+            return(
+              <div key={di}
+                onClick={()=>{if(!closed)setForm({...form,_bookingDate:dateStr});}}
+                style={{minHeight:52,padding:'4px 3px',cursor:closed?'not-allowed':'pointer',
+                  borderTop:'1px solid #f3f4f6',borderLeft:di>0?'1px solid #f3f4f6':'none',
+                  background:bg,
+                  outline:isSel?'2px solid #2563eb':isToday?'2px solid #93c5fd':'none',
+                  position:'relative'}}>
+                <div style={{textAlign:'center',fontWeight:isToday?900:700,fontSize:12,
+                  color:isSel?'#1d4ed8':closed?'#9ca3af':numColor}}>{d}</div>
+                {!closed&&(
+                  <div style={{textAlign:'center',marginTop:2}}>
+                    <span style={{fontSize:10,fontWeight:700,
+                      color:isFull?'#dc2626':cnt>=lmt-1?'#d97706':'#059669'}}>
+                      {cnt}/{lmt}台
+                    </span>
+                  </div>
+                )}
+                {closed&&<div style={{textAlign:'center',fontSize:9,color:'#9ca3af'}}>休</div>}
+                {isSel&&<div style={{position:'absolute',top:2,right:2,width:6,height:6,borderRadius:'50%',background:'#2563eb'}}/>}
+              </div>
+            );
+          })}
+        </div>
+      ))}
+      {/* 凡例 */}
+      <div style={{display:'flex',gap:10,padding:'6px 10px',background:'#f8fafc',borderTop:'1px solid #e5e7eb',flexWrap:'wrap'}}>
+        <span style={{display:'flex',alignItems:'center',gap:3,fontSize:10,color:'#059669'}}>●空き</span>
+        <span style={{display:'flex',alignItems:'center',gap:3,fontSize:10,color:'#d97706'}}>●残少</span>
+        <span style={{display:'flex',alignItems:'center',gap:3,fontSize:10,color:'#dc2626'}}>●満</span>
+        <span style={{display:'flex',alignItems:'center',gap:3,fontSize:10,color:'#9ca3af'}}>休休業日</span>
+      </div>
+    </div>
+  );
+});
+
+const BookingModal=memo(({isOpen,onClose,type,initialData,isNew,dateLabel,timeSlot,onSave,onDelete,onOpenLoanerPicker,pendingLoanerId,pendingRentalId,pendingRentalRec,rentalCarsData,loanerRes,modalDk,modalIdx:modalIdxProp,onDeleteLoaner,currentUser,setItems,onOpenSetItemEdit,allCars,fromCustList,savedModalData,inspData:bmInspData,closedDays:bmClosedDays,closedDates:bmClosedDates,overrideOpenDates:bmOverrideOpen,inspLimits:bmInspLimits})=>{
   const [form,setForm]=useState(initialData);
   const [staffInput,setStaffInput]=useState('');
   const [showStaff,setShowStaff]=useState(false);
@@ -3286,8 +3451,14 @@ const BookingModal=memo(({isOpen,onClose,type,initialData,isNew,dateLabel,timeSl
   const noteRef=useRef(null);
   const contRef=useRef(null);
 
+  // キーボード操作用state（必ずreturnより前に定義）
+  const [kbField,setKbField]=useState('');
+  const [showTmPk,setShowTmPk]=useState(false);
+  const [showWkPk,setShowWkPk]=useState(false);
+  const [showShPk,setShowShPk]=useState(false);
+
   // 同じ予約かどうかをキーで判定（代車ピッカー往復などでリセットしないため）
-  const makeKey=(d)=>d?`${d._idx??'none'}|${d.name??''}`:'';
+  const makeKey=(d)=>d?`${d._idx??'none'}|${d._slot??'none'}|${d.name??''}`:'';
   const prevKeyRef=useRef('');
   const prevOpenRef=useRef(false);
 
@@ -3300,7 +3471,8 @@ const BookingModal=memo(({isOpen,onClose,type,initialData,isNew,dateLabel,timeSl
     prevKeyRef.current=curKey;
 
     // 同じ予約の再open（代車ピッカーから戻るなど）→ formをリセットしない
-    if(sameBooking) return;
+    // ただしisNew=trueの新規入力は必ずリセット
+    if(sameBooking && !isNew) return;
 
     const loginName = currentUser?.name || '';
     const defaultStaff = initialData.staff || (isNew ? loginName : loginName);
@@ -3308,7 +3480,7 @@ const BookingModal=memo(({isOpen,onClose,type,initialData,isNew,dateLabel,timeSl
     setForm(formData);
     setStaffInput(defaultStaff);
     setShowStaff(false);
-    if(justOpened) setTimeout(()=>nameRef.current?.focus(),120);
+    if(justOpened) setTimeout(()=>{setKbField('name');nameRef.current?.focus();},120);
   },[isOpen,initialData,isNew,currentUser]);
 
   useEffect(()=>{
@@ -3320,9 +3492,100 @@ const BookingModal=memo(({isOpen,onClose,type,initialData,isNew,dateLabel,timeSl
 
   if(!isOpen) return null;
   const isInsp=type==='insp';
-  // 削除ボタン表示条件：isNew=false かつ 氏名があればOK
-  // 削除ボタン表示: isNew=false であれば削除可能（キャンセル後の空枠も含む）
   const canDelete=!isNew;
+
+  // ── キーボード操作 ──────────────────────────────────────────
+  const INSP_ORDER=['name','staff','car','course','tokuten','time','note'];
+  const SCHED_ORDER=['name','staff','car','work','shimi','note'];
+  const ORDER=isInsp?INSP_ORDER:SCHED_ORDER;
+  // フォーカスリング
+  const KB=(key)=>kbField===key
+    ?{outline:`3px solid ${isInsp?'#4338ca':'#0891b2'}`,outlineOffset:'2px',boxShadow:`0 0 0 4px rgba(${isInsp?'67,56,202':'8,145,178'},0.15)`}
+    :{};
+  // 次/前のフィールドへ
+  const TIME_VALS=Array.from({length:19},(_,i)=>{const h=Math.floor(i/2)+9,m=i%2===0?'00':'30';return`${String(h).padStart(2,'0')}:${m}`;});
+  const goNext=(from)=>{
+    const i=ORDER.indexOf(from); if(i<0||i>=ORDER.length-1)return;
+    const next=ORDER[i+1]; setKbField(next);
+    if(next==='name')nameRef.current?.focus();
+    else if(next==='staff')staffRef.current?.focus();
+    else if(next==='car')carRef.current?.focus();
+    else if(next==='time')timeRef.current?.focus();
+    else if(next==='note')noteRef.current?.focus();
+    else if(next==='cont')contRef.current?.focus();
+    else{// course/tokuten/work/shimi: モーダル内のdiv[tabIndex=0]を順番に探す
+      const divs=Array.from(document.querySelectorAll('.booking-modal-inner div[tabIndex="0"]'));
+      const target=divs.find(d=>d.dataset.kbkey===next);
+      if(target)setTimeout(()=>target.focus(),20);
+    }
+  };
+  const goPrev=(from)=>{
+    const i=ORDER.indexOf(from); if(i<=0)return;
+    const prev=ORDER[i-1]; setKbField(prev);
+    if(prev==='name')nameRef.current?.focus();
+    else if(prev==='staff')staffRef.current?.focus();
+    else if(prev==='car')carRef.current?.focus();
+    else if(prev==='time')timeRef.current?.focus();
+    else if(prev==='note')noteRef.current?.focus();
+    else if(prev==='cont')contRef.current?.focus();
+    else{
+      const divs=Array.from(document.querySelectorAll('.booking-modal-inner div[tabIndex="0"]'));
+      const target=divs.find(d=>d.dataset.kbkey===prev);
+      if(target)setTimeout(()=>target.focus(),20);
+    }
+  };
+  // 各フィールドのキーハンドラ
+  const onKbNav=(e,field)=>{
+    if(e.key==='ArrowDown'||e.key==='Enter'){e.preventDefault();goNext(field);}
+    else if(e.key==='ArrowUp'){e.preventDefault();goPrev(field);}
+  };
+  const onCourseKb=(e)=>{
+    const ids=COURSES.map(c=>c.id),cur=ids.indexOf(form.course);
+    if(e.key==='ArrowLeft'&&cur>0){e.preventDefault();setForm(p=>({...p,course:ids[cur-1]}));}
+    else if(e.key==='ArrowRight'&&cur<ids.length-1){e.preventDefault();setForm(p=>({...p,course:ids[cur+1]}));}
+    else if(e.key==='ArrowDown'||e.key==='Enter'){e.preventDefault();goNext('course');}
+    else if(e.key==='ArrowUp'){e.preventDefault();goPrev('course');}
+  };
+  const TIDS=TOKUENS.map(t=>t.id);
+  const onTokKb=(e)=>{
+    const cur=TIDS.indexOf(form.tokuten);
+    if(e.key==='ArrowLeft'&&cur>0){e.preventDefault();setForm(p=>({...p,tokuten:TIDS[cur-1]}));}
+    else if(e.key==='ArrowRight'&&cur<TIDS.length-1){e.preventDefault();setForm(p=>({...p,tokuten:TIDS[cur+1]}));}
+    else if(e.key==='ArrowDown'||e.key==='Enter'){e.preventDefault();goNext('tokuten');}
+    else if(e.key==='ArrowUp'){e.preventDefault();goPrev('tokuten');}
+  };
+  const onTimeKb=(e)=>{
+    if(!showTmPk){if(e.key==='Enter'){e.preventDefault();setShowTmPk(true);}return;}
+    const cur=TIME_VALS.indexOf(form.time);
+    if(e.key==='ArrowDown'){e.preventDefault();setForm(p=>({...p,time:TIME_VALS[Math.min(cur+1,TIME_VALS.length-1)]}));}
+    else if(e.key==='ArrowUp'){e.preventDefault();setForm(p=>({...p,time:TIME_VALS[Math.max(cur-1,0)]}));}
+    else if(e.key==='Enter'||e.key==='Escape'){e.preventDefault();setShowTmPk(false);if(e.key==='Enter')goNext('time');}
+  };
+  const WIDS=WORKS.map(w=>w.id);
+  const onWorkKb=(e)=>{
+    if(!showWkPk){if(e.key==='Enter'){e.preventDefault();setShowWkPk(true);}
+      else if(e.key==='ArrowDown'){e.preventDefault();goNext('work');}
+      else if(e.key==='ArrowUp'){e.preventDefault();goPrev('work');}
+      return;}
+    const cur=WIDS.indexOf(form.work);
+    if(e.key==='ArrowDown'){e.preventDefault();setForm(p=>({...p,work:WIDS[cur<0?0:Math.min(cur+1,WIDS.length-1)]}));}
+    else if(e.key==='ArrowUp'){e.preventDefault();setForm(p=>({...p,work:WIDS[Math.max(cur-1,0)]}));}
+    else if(e.key==='Enter'){e.preventDefault();setShowWkPk(false);setKbField('shimi');setTimeout(()=>document.querySelector('[data-kbkey="shimi"]')?.focus(),30);}
+    else if(e.key==='Escape'){e.preventDefault();setShowWkPk(false);}
+  };
+  const SHIDS=[...SHIMIS.map(s=>s.id)];
+  const onShimiKb=(e)=>{
+    if(!showShPk){if(e.key==='Enter'){e.preventDefault();setShowShPk(true);}
+      else if(e.key==='ArrowDown'){e.preventDefault();goNext('shimi');}
+      else if(e.key==='ArrowUp'){e.preventDefault();goPrev('shimi');}
+      return;}
+    const cur=SHIDS.indexOf(form.shimi);
+    if(e.key==='ArrowDown'){e.preventDefault();setForm(p=>({...p,shimi:SHIDS[Math.min(Math.max(cur,0)+1,SHIDS.length-1)]}));}
+    else if(e.key==='ArrowUp'){e.preventDefault();setForm(p=>({...p,shimi:SHIDS[Math.max(cur-1,0)]}));}
+    else if(e.key==='Enter'){e.preventDefault();setShowShPk(false);contRef.current?.focus();setKbField('note');}
+    else if(e.key==='Escape'){e.preventDefault();setShowShPk(false);}
+  };
+  // ──────────────────────────────────────────────────────────
 
   const handleSave=()=>{
     if(!form.name){alert('氏名を入力してください');nameRef.current?.focus();return;}
@@ -3368,7 +3631,7 @@ const BookingModal=memo(({isOpen,onClose,type,initialData,isNew,dateLabel,timeSl
 
   return (
     <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.35)',zIndex:1000,display:'flex',alignItems:'stretch',justifyContent:'flex-start'}} onClick={onClose}>
-      <div onClick={e=>e.stopPropagation()} className="slide-in"
+      <div onClick={e=>e.stopPropagation()} className="slide-in booking-modal-inner"
         style={{background:'white',width:'clamp(360px,90vw,560px)',height:'100vh',overflowY:'auto',boxShadow:'8px 0 32px rgba(0,0,0,0.22)',borderRight:`3px solid ${isInsp?'#3730a3':'#0891b2'}`}}>
         {/* パネルヘッダー */}
         <div style={{background:isInsp?'linear-gradient(135deg,#3730a3,#6d28d9)':'linear-gradient(135deg,#0e7490,#0891b2)',padding:'16px 20px',display:'flex',justifyContent:'space-between',alignItems:'center',position:'sticky',top:0,zIndex:20}}>
@@ -3399,13 +3662,29 @@ const BookingModal=memo(({isOpen,onClose,type,initialData,isNew,dateLabel,timeSl
         )}
 
         <div style={{padding:'16px 20px',display:'grid',gap:14}}>
-          {/* 入庫日（車検日）— リスト画面からのみ表示・最上部 */}
+          {/* 入庫日（車検日）— リスト画面からのみ表示・車検カレンダー */}
           {isInsp&&fromCustList&&(
             <div>
-              <label style={LBL}>📅 入庫日（車検日） <span style={{fontWeight:400,color:'#9ca3af',fontSize:10}}>変更可・空欄でも仮予約OK</span></label>
-              <input type="date" value={form._bookingDate||''}
-                onChange={e=>setForm({...form,_bookingDate:e.target.value})}
-                style={{...INP,fontWeight:700,color:'#1d4ed8',fontSize:13}}/>
+              <label style={LBL}>📅 入庫日（車検日） <span style={{fontWeight:400,color:'#9ca3af',fontSize:10}}>カレンダーから選択・空欄でも仮予約OK</span></label>
+              {/* 選択済み日付の表示 */}
+              {form._bookingDate&&(
+                <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:8,padding:'7px 12px',background:'#dbeafe',border:'2px solid #3b82f6',borderRadius:8}}>
+                  <span style={{fontWeight:800,color:'#1d4ed8',fontSize:13}}>📅 {form._bookingDate}</span>
+                  <button onClick={()=>setForm({...form,_bookingDate:''})}
+                    style={{marginLeft:'auto',padding:'2px 8px',background:'#ef4444',color:'white',border:'none',borderRadius:5,fontSize:11,cursor:'pointer',fontWeight:700}}>
+                    ✕ クリア
+                  </button>
+                </div>
+              )}
+              {/* 車検カレンダー */}
+              <InspCalendarPicker
+                form={form} setForm={setForm}
+                bmInspData={bmInspData}
+                bmClosedDays={bmClosedDays}
+                bmClosedDates={bmClosedDates}
+                bmOverrideOpen={bmOverrideOpen}
+                bmInspLimits={bmInspLimits}
+              />
             </div>
           )}
           {/* 仮予約保存済みバナー */}
@@ -3430,16 +3709,22 @@ const BookingModal=memo(({isOpen,onClose,type,initialData,isNew,dateLabel,timeSl
           {/* 氏名 */}
           <div>
             <label style={LBL}>氏名 *</label>
-            <input ref={nameRef} value={form.name} onChange={e=>setForm({...form,name:e.target.value})} 
-              onKeyDown={e=>{handleArrowKey(e);ke(e,staffRef);}} placeholder="お客様名" style={INP}/>
+            <input ref={nameRef} value={form.name} onChange={e=>setForm({...form,name:e.target.value})}
+              onFocus={()=>setKbField('name')} onBlur={()=>setKbField('')}
+              onKeyDown={e=>onKbNav(e,'name')} placeholder="お客様名" style={{...INP,...KB('name')}}/>
           </div>
           {/* 担当 */}
           <div>
             <label style={LBL}>担当 <span style={{fontWeight:400,color:'#9ca3af',fontSize:10}}>番号入力可・ダブルクリックで一覧</span></label>
-            <input ref={staffRef} value={staffInput} onChange={e=>setStaffInput(e.target.value)} onBlur={handleStaffBlur}
+            <input ref={staffRef} value={staffInput} onChange={e=>setStaffInput(e.target.value)}
+              onFocus={()=>setKbField('staff')}
+              onBlur={()=>{handleStaffBlur();setKbField('');}}
               onDoubleClick={()=>setShowStaff(p=>!p)}
-              onKeyDown={e=>{handleArrowKey(e);if(e.key==='Enter'){e.preventDefault();handleStaffBlur();carRef.current?.focus();}}}
-              placeholder="担当者名 or 番号" style={INP}/>
+              onKeyDown={e=>{
+                if(e.key==='Enter'||e.key==='ArrowDown'){e.preventDefault();handleStaffBlur();goNext('staff');}
+                else if(e.key==='ArrowUp'){e.preventDefault();handleStaffBlur();goPrev('staff');}
+              }}
+              placeholder="担当者名 or 番号" style={{...INP,...KB('staff')}}/>
             {showStaff&&<div style={{display:'flex',gap:4,marginTop:5,flexWrap:'wrap'}}>
               {STAFF.map(s=><button key={s.id} onClick={()=>{setStaffInput(s.name);setForm(p=>({...p,staff:s.name}));setShowStaff(false);carRef.current?.focus();}} style={{padding:'2px 8px',fontSize:11,borderRadius:4,border:'1px solid #e5e7eb',cursor:'pointer',background:form.staff===s.name?'#4338ca':'white',color:form.staff===s.name?'white':'#374151'}}>{s.id}.{s.name}</button>)}
             </div>}
@@ -3447,30 +3732,26 @@ const BookingModal=memo(({isOpen,onClose,type,initialData,isNew,dateLabel,timeSl
           {/* 車種 */}
           <div>
             <label style={LBL}>車種</label>
-            <input ref={carRef} value={form.carType} onChange={e=>setForm({...form,carType:e.target.value})} 
-              onKeyDown={e=>{
-                handleArrowKey(e);
-                if(e.key==='Enter'){
-                  e.preventDefault();
-                  if(isInsp){
-                    // 車検：車種→特典（代車スキップ）
-                    tokutenRef.current?.focus();
-                  }else{
-                    // 整備：車種→作業内容
-                    workRef.current?.focus();
-                  }
-                }
-              }}
-              placeholder="例：プリウス" style={INP}/>
+            <input ref={carRef} value={form.carType} onChange={e=>setForm({...form,carType:e.target.value})}
+              onFocus={()=>setKbField('car')} onBlur={()=>setKbField('')}
+              onKeyDown={e=>onKbNav(e,'car')}
+              placeholder="例：プリウス" style={{...INP,...KB('car')}}/>
           </div>
           {/* コース（車検） */}
           {isInsp&&(
             <div>
               <label style={LBL}>コース *</label>
-              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:7}}>
+              <div data-kbkey="course" tabIndex={0} onFocus={()=>{setKbField('course');if(!form.course)setForm(p=>({...p,course:COURSES[0].id}));}} onBlur={()=>setKbField('')}
+                onKeyDown={onCourseKb}
+                style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:7,outline:'none'}}>
                 {COURSES.map(c=>(
-                  <button key={c.id} onClick={()=>setForm({...form,course:c.id})}
-                    style={{padding:'10px 6px',borderRadius:9,border:`2px solid ${form.course===c.id?c.color:'#e5e7eb'}`,background:form.course===c.id?c.bg:'white',color:form.course===c.id?c.color:'#6b7280',fontWeight:700,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:5,transition:'all .12s'}}>
+                  <button key={c.id} tabIndex={-1} onClick={()=>{setForm({...form,course:c.id});}}
+                    style={{padding:'10px 6px',borderRadius:9,
+                      border:`2px solid ${form.course===c.id?c.color:'#e5e7eb'}`,
+                      background:form.course===c.id?c.bg:'white',
+                      color:form.course===c.id?c.color:'#6b7280',
+                      fontWeight:700,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:5,transition:'all .12s',
+                      outline:kbField==='course'&&form.course===c.id?`3px solid ${c.color}`:'none',outlineOffset:'2px'}}>
                     <span style={{width:22,height:22,borderRadius:'50%',background:form.course===c.id?c.color:'#e5e7eb',color:form.course===c.id?'white':'#9ca3af',display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,fontWeight:900,flexShrink:0}}>{c.initial}</span>
                     <span style={{fontSize:10}}>{c.name}</span>
                   </button>
@@ -3482,13 +3763,29 @@ const BookingModal=memo(({isOpen,onClose,type,initialData,isNew,dateLabel,timeSl
           {!isInsp&&(
             <div>
               <label style={LBL}>作業内容</label>
-              <select ref={workRef} value={form.work}
-                onChange={e=>setForm({...form,work:e.target.value})}
-                onKeyDown={e=>{if(e.key==='Enter'){e.preventDefault();shimiRef.current?.focus();}}}
-                style={INP}>
-                <option value="">選択してください</option>
-                {WORKS.map((w,i)=><option key={i} value={w.id}>{w.id} {w.name}</option>)}
-              </select>
+              <div data-kbkey="work" tabIndex={0}
+                onFocus={()=>setKbField('work')} onBlur={()=>{setKbField('');setTimeout(()=>setShowWkPk(false),150);}}
+                onKeyDown={onWorkKb} onClick={()=>setShowWkPk(p=>!p)}
+                style={{...INP,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'space-between',...KB('work')}}>
+                <span style={{color:form.work?'#111':'#9ca3af'}}>
+                  {form.work?(WORKS.find(w=>w.id===form.work)||{name:'未選択'}).name:'選択してください（Enterで開く）'}
+                </span>
+                <span style={{fontSize:10,color:'#6b7280'}}>{showWkPk?'▲':'▼'}</span>
+              </div>
+              {showWkPk&&(
+                <div style={{border:'2px solid #0891b2',borderRadius:8,marginTop:4,maxHeight:180,overflowY:'auto',background:'white',boxShadow:'0 4px 12px rgba(0,0,0,0.15)'}}>
+                  {WORKS.map((w,i)=>(
+                    <div key={i}
+                      onMouseDown={e=>{e.preventDefault();setForm(p=>({...p,work:w.id}));setShowWkPk(false);setKbField('shimi');}}
+                      style={{padding:'8px 12px',cursor:'pointer',fontSize:13,
+                        background:form.work===w.id?'#e0f2fe':'white',
+                        fontWeight:form.work===w.id?700:400,
+                        borderLeft:form.work===w.id?'3px solid #0891b2':'3px solid transparent'}}>
+                      {w.id} {w.name}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
           {/* 代車・レンタカー */}
@@ -3527,18 +3824,21 @@ const BookingModal=memo(({isOpen,onClose,type,initialData,isNew,dateLabel,timeSl
           {isInsp&&(
             <div>
               <label style={LBL}>特典</label>
-              <select ref={tokutenRef} value={form.tokuten} 
-                onChange={e=>setForm({...form,tokuten:e.target.value})}
-                onKeyDown={e=>{
-                  handleArrowKey(e);
-                  if(e.key==='Enter'){
-                    e.preventDefault();
-                    timeRef.current?.focus();
-                  }
-                }}
-                style={INP}>
-                {TOKUENS.map(t=><option key={t.id} value={t.id}>{t.id} {t.name}</option>)}
-              </select>
+              <div data-kbkey="tokuten" tabIndex={0} onFocus={()=>setKbField('tokuten')} onBlur={()=>setKbField('')}
+                onKeyDown={onTokKb}
+                style={{display:'flex',gap:6,outline:'none'}}>
+                {TOKUENS.map(t=>(
+                  <button key={t.id} tabIndex={-1} onClick={()=>setForm(p=>({...p,tokuten:t.id}))}
+                    style={{flex:1,padding:'9px 4px',borderRadius:8,fontWeight:700,cursor:'pointer',fontSize:11,
+                      border:`2px solid ${form.tokuten===t.id?'#4338ca':'#e5e7eb'}`,
+                      background:form.tokuten===t.id?'#ede9fe':'white',
+                      color:form.tokuten===t.id?'#4338ca':'#6b7280',
+                      outline:kbField==='tokuten'&&form.tokuten===t.id?'3px solid #4338ca':'none',
+                      outlineOffset:'2px'}}>
+                    {t.id} {t.name}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
           
@@ -3546,28 +3846,58 @@ const BookingModal=memo(({isOpen,onClose,type,initialData,isNew,dateLabel,timeSl
           {!isInsp&&(
             <div>
               <label style={LBL}>指・見</label>
-              <select ref={shimiRef} value={form.shimi} 
-                onChange={e=>setForm({...form,shimi:e.target.value})} 
-                onKeyDown={e=>{
-                  if(e.key==='Enter'){
-                    e.preventDefault();
-                    contRef.current?.focus();
-                  }
-                }}
-                style={INP}>
-                <option value="">選択してください</option>
-                {SHIMIS.map((s,i)=><option key={i} value={s.id}>{s.name}</option>)}
-              </select>
+              <div data-kbkey="shimi" tabIndex={0}
+                onFocus={()=>{setKbField('shimi');setShowWkPk(false);}} onBlur={()=>{setKbField('');setTimeout(()=>setShowShPk(false),150);}}
+                onKeyDown={onShimiKb} onClick={()=>setShowShPk(p=>!p)}
+                style={{...INP,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'space-between',...KB('shimi')}}>
+                <span style={{color:form.shimi!==undefined&&form.shimi!==''?'#111':'#9ca3af'}}>
+                  {form.shimi!==undefined&&form.shimi!==''?(SHIMIS.find(s=>s.id===form.shimi)||{name:'未選択'}).name:'選択してください（Enterで開く）'}
+                </span>
+                <span style={{fontSize:10,color:'#6b7280'}}>{showShPk?'▲':'▼'}</span>
+              </div>
+              {showShPk&&(
+                <div style={{border:'2px solid #0891b2',borderRadius:8,marginTop:4,maxHeight:160,overflowY:'auto',background:'white',boxShadow:'0 4px 12px rgba(0,0,0,0.15)'}}>
+                  {SHIMIS.map((s,i)=>(
+                    <div key={i}
+                      onMouseDown={e=>{e.preventDefault();setForm(p=>({...p,shimi:s.id}));setShowShPk(false);contRef.current?.focus();setKbField('note');}}
+                      style={{padding:'8px 12px',cursor:'pointer',fontSize:13,
+                        background:form.shimi===s.id?'#e0f2fe':'white',
+                        fontWeight:form.shimi===s.id?700:400,
+                        borderLeft:form.shimi===s.id?'3px solid #0891b2':'3px solid transparent'}}>
+                      {s.name}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
           {/* 入庫時間（車検） */}
           {isInsp&&(
             <div>
               <label style={LBL}>入庫時間 <span style={{fontWeight:400,color:'#9ca3af',fontSize:10}}>900→9:00</span></label>
-              <input ref={timeRef} value={form.time} onChange={e=>setForm({...form,time:e.target.value})}
-                onBlur={e=>setForm({...form,time:formatTime(e.target.value)})}
-                onKeyDown={e=>{handleArrowKey(e);if(e.key==='Enter'){e.preventDefault();setForm(p=>({...p,time:formatTime(p.time)}));noteRef.current?.focus();}}}
-                placeholder="900 → 9:00" style={INP}/>
+              <div ref={timeRef} tabIndex={0}
+                onFocus={()=>setKbField('time')} onBlur={()=>{setKbField('');setTimeout(()=>setShowTmPk(false),150);}}
+                onKeyDown={onTimeKb} onClick={()=>setShowTmPk(p=>!p)}
+                style={{...INP,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'space-between',...KB('time')}}>
+                <span style={{fontWeight:700,color:form.time?'#0891b2':'#9ca3af',fontSize:14}}>
+                  {form.time||'時間を選択（Enterで開く）'}
+                </span>
+                <span style={{fontSize:10,color:'#6b7280'}}>{showTmPk?'▲':'▼'}</span>
+              </div>
+              {showTmPk&&(
+                <div style={{border:'2px solid #0891b2',borderRadius:8,marginTop:4,maxHeight:200,overflowY:'auto',background:'white',boxShadow:'0 4px 12px rgba(0,0,0,0.15)'}}>
+                  {TIME_VALS.map(v=>(
+                    <div key={v}
+                      onMouseDown={e=>{e.preventDefault();setForm(p=>({...p,time:v}));setShowTmPk(false);goNext('time');}}
+                      style={{padding:'8px 16px',cursor:'pointer',fontSize:14,fontWeight:form.time===v?800:400,
+                        background:form.time===v?'#e0f2fe':'white',
+                        color:form.time===v?'#0891b2':'#374151',
+                        borderLeft:form.time===v?'4px solid #0891b2':'4px solid transparent'}}>
+                      {v}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
           {/* 備考・内容 */}
@@ -3624,8 +3954,9 @@ const BookingModal=memo(({isOpen,onClose,type,initialData,isNew,dateLabel,timeSl
             )}
             <textarea ref={isInsp?noteRef:contRef} value={isInsp?form.note:form.content}
               onChange={e=>setForm({...form,[isInsp?'note':'content']:e.target.value})}
-              onKeyDown={e=>handleArrowKey(e)}
-              rows={3} placeholder="メモや特記事項" style={{...INP,resize:'vertical',minHeight:65}}/>
+              onFocus={()=>setKbField('note')} onBlur={()=>setKbField('')}
+              onKeyDown={e=>{if(e.key==='ArrowUp'&&e.target.selectionStart===0){e.preventDefault();goPrev('note');}}}              
+              rows={3} placeholder="メモや特記事項（クイックバッジはマウスで選択）" style={{...INP,resize:'vertical',minHeight:65,...KB('note')}}/>
           </div>
           {/* ボタン */}
           <div style={{display:'flex',flexDirection:'column',gap:8,paddingBottom:28}}>
@@ -3658,12 +3989,29 @@ const BookingModal=memo(({isOpen,onClose,type,initialData,isNew,dateLabel,timeSl
 });
 
 // ============================================
-const InspRow=memo(({row,idx,dispNo,dk,onOpenModal,lockInfo,loanerRes,vsId,onApprove,isOverLimit,setItems})=>{
+
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║  BLOCK-C: コアロジック・行表示                                  ║
+// ║  【変更禁止】7台目承認・店舗判定・ロック処理が含まれる          ║
+// ║  含まれる内容:                                                  ║
+// ║  - InspRow（車検行コンポーネント）                              ║
+// ║  - SchedRow（スケジュール行コンポーネント）                     ║
+// ║  - 7台目承認待ちロジック（waitingRows / normalRows）            ║
+// ║  - 店舗判定ロジック（otherStore / canApprove）                  ║
+// ║  ⚠️  変更が必要な場合は必ずdev環境で十分テストすること          ║
+// ╚══════════════════════════════════════════════════════════════════╝
+
+const InspRow=memo(({row,idx,dispNo,dk,onOpenModal,lockInfo,loanerRes,loanerResH,loanerResS,vsId,onApprove,isOverLimit,setItems})=>{
   const cObj=row.course?COURSES.find(c=>c.id===row.course):null;
   const isEmpty=!row.name&&!row.staff&&!row.carType&&!row.course;
   const locked=lockInfo?.lockedBy;
   const bookingKey=`insp-${dk}-${idx}`;
-  const loanerLabel=getLoanerLabel(loanerRes,dk,row.name,bookingKey);
+  // row.storeに基づいてloanerResを選択（店舗切り替えで代車が変わらないようにする）
+  const normRowStore=s=>{if(!s)return vsId;if(s==='honten'||s==='本店')return'honten';if(s==='sanda'||s==='三田店')return'sanda';return vsId;};
+  const rowLoanerRes=(loanerResH&&loanerResS)
+    ?(normRowStore(row.store)==='honten'?loanerResH:loanerResS)
+    :loanerRes;
+  const loanerLabel=getLoanerLabel(rowLoanerRes,dk,row.name,bookingKey);
   // store正規化: 'honten'/'本店' → 'honten'、'sanda'/'三田店' → 'sanda'
   const normStore=s=>{if(!s)return'';if(s==='honten'||s==='本店')return'honten';if(s==='sanda'||s==='三田店')return'sanda';return s;};
   const rowStore=normStore(row.store);
@@ -3766,7 +4114,7 @@ const SchedRow=memo(({row,slot,baseSlot,isFirstSub,dk,onOpenModal,lockInfo,loane
 
   return (
     <tr style={{background:isRestricted?'#fee2e2':locked?'#fff7ed':row.store==='sanda'?'#fff0f0':row.store==='honten'?'#eff6ff':isHour?'white':'#f0feff',cursor:locked||otherStore?'not-allowed':'pointer'}}
-      onClick={()=>{if(!locked&&!otherStore)onOpenModal('sched',dk,null,slot,false);}}>
+      onClick={()=>{if(!locked&&!otherStore){const _e=!row.name;onOpenModal('sched',dk,null,slot,_e);}}}>
       <td style={{...TD,fontWeight:isFirstSub&&isHour?800:500,color:isFirstSub&&isHour?'#0891b2':'#7dd3fc',whiteSpace:'nowrap',paddingLeft:10,fontSize:isFirstSub&&isHour?13:11,borderLeft:isSub?'3px solid #7dd3fc':''}}>
         {isFirstSub?slot:<span style={{fontSize:9,color:'#a5f3fc'}}>↳</span>}
       </td>
@@ -4541,12 +4889,14 @@ const LoanerSettingsModal = memo(({isOpen, onClose, listH, listS, onSaveH, onSav
 // ============================================
 //  代車管理グリッド（閲覧専用 + モーダル編集）
 // ============================================
-const LoanerGrid=memo(({loanerRes,loanerMonth,setLoanerMonth,onAddRes,onDeleteRes,onUndo,selDate,onBack,onPickLoaner,pickMode,locks,currentUser,onLockCar,onUnlockCar,savedModalData,inspData,schedData,onOpenBooking,pinnedRes,setPinnedRes,hoverRes,setHoverRes,storeLoaners,storeInfo,rentalCars,rentalRes,onAddRentalRes,onDeleteRentalRes,onPickRental,onOpenSettings,tireData,locationData,onOpenTireEdit,onOpenLocationEdit})=>{
+const LoanerGrid=memo(({loanerRes,loanerMonth,setLoanerMonth,onAddRes,onDeleteRes,onUndo,selDate,onBack,onPickLoaner,pickMode,locks,currentUser,onLockCar,onUnlockCar,savedModalData,inspData,schedData,onOpenBooking,pinnedRes,setPinnedRes,hoverRes,setHoverRes,storeLoaners,storeInfo,rentalCars,rentalRes,onAddRentalRes,onDeleteRentalRes,onReplaceRentalRes,onPickRental,onOpenSettings,tireData,locationData,onOpenTireEdit,onOpenLocationEdit})=>{
   const LOANERS_LOCAL=storeLoaners||LOANERS;
   const RENTAL_LOCAL=rentalCars||DEFAULT_RENTAL_CARS;
   const rentalResLocal=rentalRes||{};
   const [editModal,setEditModal]=useState(null);
   const [editForm,setEditForm]=useState({user:'',startDate:'',endDate:''});
+  const [rentalEditModal,setRentalEditModal]=useState(null);
+  const [rentalEditForm,setRentalEditForm]=useState({user:'',startDate:'',endDate:''});
   // pinnedRes/hoverResは親から受け取る（グリッドの再レンダリングを防いでscrollLeftを保持）
   // pickMode用ドラッグ状態
   const [drag,setDrag]=useState(null);
@@ -4558,13 +4908,13 @@ const LoanerGrid=memo(({loanerRes,loanerMonth,setLoanerMonth,onAddRes,onDeleteRe
 
   // 表示範囲：selDateから-2日〜+31日（月をまたぐ）
   const dateRange=useMemo(()=>{
-    const today=selDate||new Date();
-    const startDate=new Date(today);
-    startDate.setDate(startDate.getDate()-2);
-    const endDate=new Date(today);
-    endDate.setDate(endDate.getDate()+31);
-    
-    // 日付配列を生成（月をまたぐ）
+    // loanerMonthの月を中心に前月末〜翌月頭まで表示（長期レンタル対応）
+    const baseMonth=loanerMonth||new Date();
+    const y=baseMonth.getFullYear();
+    const m=baseMonth.getMonth();
+    // 前月15日〜翌々月15日の約90日間を表示
+    const startDate=new Date(y,m-1,15);
+    const endDate=new Date(y,m+2,15);
     const range=[];
     const current=new Date(startDate);
     while(current<=endDate){
@@ -4577,7 +4927,7 @@ const LoanerGrid=memo(({loanerRes,loanerMonth,setLoanerMonth,onAddRes,onDeleteRe
       current.setDate(current.getDate()+1);
     }
     return range;
-  },[selDate]);
+  },[loanerMonth]);
 
   const DOW=['日','月','火','水','木','金','土'];
   const hi=selDate?selDate.getDate():null;
@@ -4652,6 +5002,16 @@ const LoanerGrid=memo(({loanerRes,loanerMonth,setLoanerMonth,onAddRes,onDeleteRe
 
   // 閲覧モード：editModalで編集
   const openEdit=(car,res)=>{
+    if(res._rental){
+      // レンタカー編集
+      setRentalEditForm({
+        user:res.user,
+        startDate:`${res.fy}-${String(res.fm+1).padStart(2,'0')}-${String(res.fd).padStart(2,'0')}`,
+        endDate:`${res.ty}-${String(res.tm+1).padStart(2,'0')}-${String(res.td).padStart(2,'0')}`
+      });
+      setRentalEditModal({carId:car.id,resId:res.id,carName:car.name,color:res.color});
+      return;
+    }
     setEditForm({
       user:res.user,
       startDate:`${res.fy}-${String(res.fm+1).padStart(2,'0')}-${String(res.fd).padStart(2,'0')}`,
@@ -4709,6 +5069,30 @@ const LoanerGrid=memo(({loanerRes,loanerMonth,setLoanerMonth,onAddRes,onDeleteRe
     onDeleteRes(editModal.carId,editModal.resId);
     onAddRes(editModal.carId,{id:Date.now(),fy,fm:fm-1,fd,ty,tm:tm-1,td,user:editForm.user,color:prev?.color||RES_COLORS[0]});
     setEditModal(null);
+  };
+
+  // レンタカー編集保存
+  const saveEditRental=()=>{
+    if(!rentalEditForm.user.trim()||!rentalEditForm.startDate||!rentalEditForm.endDate)return;
+    const [fy,fm,fd]=rentalEditForm.startDate.split('-').map(Number);
+    const [ty,tm,td]=rentalEditForm.endDate.split('-').map(Number);
+    if(toNum(fy,fm-1,fd)>toNum(ty,tm-1,td)){alert('返却日は貸出日以降にしてください');return;}
+    // 重複チェック
+    const rentalResLocal=rentalRes||{};
+    const others=(rentalResLocal[rentalEditModal.carId]||[]).filter(r=>r.id!==rentalEditModal.resId);
+    const conflict=others.some(r=>{
+      const rs=toNum(r.fy,r.fm,r.fd),re=toNum(r.ty,r.tm,r.td);
+      const ns=toNum(fy,fm-1,fd),ne=toNum(ty,tm-1,td);
+      return ns<=re&&ne>=rs;
+    });
+    if(conflict){alert('その期間は他の予約と重複しています');return;}
+    // 1回のatomic更新で既存レコードを差し替え（delete+addの競合を防ぐ）
+    onReplaceRentalRes(rentalEditModal.carId,rentalEditModal.resId,{
+      fy,fm:fm-1,fd,ty,tm:tm-1,td,
+      user:rentalEditForm.user,
+      color:rentalEditModal.color||RES_COLORS[0],
+    });
+    setRentalEditModal(null);
   };
 
   return (
@@ -4771,7 +5155,7 @@ const LoanerGrid=memo(({loanerRes,loanerMonth,setLoanerMonth,onAddRes,onDeleteRe
             {LOANERS_LOCAL.map(car=>{
               return (
                 <tr key={car.id}>
-                  <td style={{background:'#f9fafb',border:'1px solid #e5e7eb',padding:'5px 9px',fontWeight:600,fontSize:11,whiteSpace:'nowrap',position:'sticky',left:0,zIndex:5,transform:'translateZ(0)',backfaceVisibility:'hidden'}}>
+                  <td style={{background:'#f9fafb',border:'1px solid #e5e7eb',padding:'5px 9px',fontWeight:600,fontSize:11,whiteSpace:'nowrap',position:'sticky',left:0,zIndex:5,transform:'translateZ(0)',backfaceVisibility:'hidden',height:40,boxSizing:'border-box'}}>
                     {(()=>{
                       const tireId=tireData&&tireData[String(car.id)];
                       const tireInfo=TIRE_TYPES.find(x=>x.id===tireId);
@@ -4821,7 +5205,7 @@ const LoanerGrid=memo(({loanerRes,loanerMonth,setLoanerMonth,onAddRes,onDeleteRe
                           }
                         }}
                         style={{
-                          width:44,minWidth:44,maxWidth:44,height:34,
+                          width:44,minWidth:44,maxWidth:44,height:40,
                           border:'1px solid #e5e7eb',
                           boxShadow:isDrag?'inset 0 0 0 2px #65a30d':isConf?'inset 0 0 0 2px #2563eb':'none',
                           background:bg,
@@ -4869,12 +5253,12 @@ const LoanerGrid=memo(({loanerRes,loanerMonth,setLoanerMonth,onAddRes,onDeleteRe
         </div>
       )}
 
-      {/* 固定編集パネル（クリックで開く・パネル内操作可） */}
-      {!pickMode&&pinnedRes&&(
-        <div style={{position:'fixed',bottom:24,right:24,zIndex:2000,background:'white',border:'2px solid #4338ca',borderRadius:12,padding:'16px 18px',boxShadow:'0 8px 40px rgba(0,0,0,0.25)',minWidth:260}}>
+      {/* 固定編集パネル（予約済みバーをクリックで開く） */}
+      {!pickMode&&pinnedRes&&pinnedRes.res&&(
+        <div style={{position:'fixed',bottom:24,right:24,zIndex:2000,background:'white',border:`2px solid ${pinnedRes.res._rental?'#059669':'#4338ca'}`,borderRadius:12,padding:'16px 18px',boxShadow:'0 8px 40px rgba(0,0,0,0.25)',minWidth:260}}>
           <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:10}}>
-            <div style={{fontSize:13,fontWeight:800,color:'#1e1b4b'}}>
-              🚙 {pinnedRes.car.name}
+            <div style={{fontSize:13,fontWeight:800,color:pinnedRes.res._rental?'#065f46':'#1e1b4b'}}>
+              {pinnedRes.res._rental?'🔑':'🚙'} {pinnedRes.car.name}
             </div>
             <button onClick={()=>setPinnedRes(null)}
               style={{background:'#f3f4f6',border:'none',borderRadius:'50%',width:24,height:24,cursor:'pointer',fontSize:14,display:'flex',alignItems:'center',justifyContent:'center',color:'#6b7280'}}>×</button>
@@ -4887,13 +5271,16 @@ const LoanerGrid=memo(({loanerRes,loanerMonth,setLoanerMonth,onAddRes,onDeleteRe
             <button onClick={()=>{openEdit(pinnedRes.car,pinnedRes.res);setPinnedRes(null);}}
               style={{flex:1,padding:'8px 0',background:'#4338ca',color:'white',border:'none',borderRadius:7,fontWeight:700,fontSize:12,cursor:'pointer'}}>✎ 編集</button>
             <button onClick={()=>{
-              // 関連スケジュールを開く
-              handleResClick({...pinnedRes.res,carId:pinnedRes.car.id});
-              setPinnedRes(null);
+              if(window.confirm(`「${pinnedRes.car.name}」の予約（${pinnedRes.res.fm+1}/${pinnedRes.res.fd}〜${pinnedRes.res.tm+1}/${pinnedRes.res.td} ${pinnedRes.res.user}）を削除しますか？`)){
+                if(pinnedRes.res._rental){
+                  onDeleteRentalRes(pinnedRes.car.id,pinnedRes.res.id);
+                }else{
+                  onDeleteRes(pinnedRes.car.id,pinnedRes.res.id);
+                }
+                setPinnedRes(null);
+              }
             }}
-              style={{flex:1,padding:'8px 0',background:'#0891b2',color:'white',border:'none',borderRadius:7,fontWeight:700,fontSize:12,cursor:'pointer'}}>📋 予約へ</button>
-            <button onClick={()=>{onDeleteRes(pinnedRes.car.id,pinnedRes.res.id);setPinnedRes(null);}}
-              style={{flex:1,padding:'8px 0',background:'#ef4444',color:'white',border:'none',borderRadius:7,fontWeight:700,fontSize:12,cursor:'pointer'}}>× 削除</button>
+              style={{flex:1,padding:'8px 0',background:'#ef4444',color:'white',border:'none',borderRadius:7,fontWeight:700,fontSize:12,cursor:'pointer'}}>🗑 削除</button>
           </div>
         </div>
       )}
@@ -5052,11 +5439,11 @@ const LoanerGrid=memo(({loanerRes,loanerMonth,setLoanerMonth,onAddRes,onDeleteRe
                     const locId=locationData?locationData[String(car.id)]:null;
                     return (
                       <tr key={car.id}>
-                        <td style={{background:'#f0fdf4',border:'1px solid #a7f3d0',padding:'5px 9px',fontWeight:600,fontSize:11,whiteSpace:'nowrap',position:'sticky',left:0,zIndex:5}}>
-                          <div style={{display:'flex',alignItems:'center',gap:4,flexWrap:'wrap'}}>
+                        <td style={{background:'#f0fdf4',border:'1px solid #a7f3d0',padding:'5px 9px',fontWeight:600,fontSize:11,whiteSpace:'nowrap',position:'sticky',left:0,zIndex:5,height:40,boxSizing:'border-box'}}>
+                          <div style={{display:'flex',alignItems:'center',gap:4,flexWrap:'nowrap',overflow:'hidden'}}>
                             {tireInfo&&<span title={tireInfo.label} style={{display:'inline-flex',alignItems:'center',justifyContent:'center',width:22,height:16,borderRadius:3,background:tireInfo.bg,color:tireInfo.color,fontSize:9,fontWeight:900,flexShrink:0}}>{tireInfo.icon}</span>}
-                            <div>
-                              <div style={{fontWeight:700,color:'#065f46'}}>{car.name}</div>
+                            <div style={{minWidth:0,overflow:'hidden'}}>
+                              <div style={{fontWeight:700,color:'#065f46',overflow:'hidden',textOverflow:'ellipsis'}}>{car.name}</div>
                               <div style={{color:'#9ca3af',fontSize:9}}>{car.num}</div>
                             </div>
                             {locId==='honten'&&<span title="本店" style={{display:'inline-flex',alignItems:'center',justifyContent:'center',width:18,height:18,borderRadius:3,background:'#2563eb',color:'white',fontSize:10,fontWeight:900,flexShrink:0,lineHeight:1}}>本</span>}
@@ -5085,7 +5472,7 @@ const LoanerGrid=memo(({loanerRes,loanerMonth,setLoanerMonth,onAddRes,onDeleteRe
                                 if(!pickMode&&isObj){e.preventDefault();e.stopPropagation();setPinnedRes({car,res:{...st,_rental:true}});}
                               }}
                               style={{
-                                width:44,minWidth:44,maxWidth:44,height:34,
+                                width:44,minWidth:44,maxWidth:44,height:40,
                                 border:'1px solid #a7f3d0',
                                 boxShadow:isDrag?'inset 0 0 0 2px #65a30d':isConf?'inset 0 0 0 2px #2563eb':'none',
                                 background:bg,
@@ -5143,7 +5530,7 @@ const LoanerGrid=memo(({loanerRes,loanerMonth,setLoanerMonth,onAddRes,onDeleteRe
         );
       })()}
 
-      {/* 編集モーダル */}
+      {/* 編集モーダル（代車） */}
       {editModal&&(
         <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.5)',zIndex:3000,display:'flex',alignItems:'center',justifyContent:'center'}} onClick={()=>setEditModal(null)}>
           <div onClick={e=>e.stopPropagation()} className="modal-box" style={{background:'white',borderRadius:15,padding:'24px 28px',width:'min(420px,92vw)',boxShadow:'0 20px 60px rgba(0,0,0,0.3)'}}>
@@ -5178,6 +5565,41 @@ const LoanerGrid=memo(({loanerRes,loanerMonth,setLoanerMonth,onAddRes,onDeleteRe
           </div>
         </div>
       )}
+
+      {/* 編集モーダル（レンタカー） */}
+      {rentalEditModal&&(
+        <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.5)',zIndex:3000,display:'flex',alignItems:'center',justifyContent:'center'}} onClick={()=>setRentalEditModal(null)}>
+          <div onClick={e=>e.stopPropagation()} className="modal-box" style={{background:'white',borderRadius:15,padding:'24px 28px',width:'min(420px,92vw)',boxShadow:'0 20px 60px rgba(0,0,0,0.3)'}}>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:16}}>
+              <h2 style={{fontSize:16,fontWeight:800,color:'#065f46',margin:0}}>🔑 レンタカー予約の編集 - {rentalEditModal.carName}</h2>
+              <button onClick={()=>setRentalEditModal(null)} style={{background:'#f3f4f6',border:'none',borderRadius:'50%',width:30,height:30,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center'}}><X size={14}/></button>
+            </div>
+            <div style={{display:'grid',gap:12}}>
+              <div><label style={LBL}>利用者名</label><input value={rentalEditForm.user} onChange={e=>setRentalEditForm(p=>({...p,user:e.target.value}))} style={INP} autoFocus/></div>
+              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10}}>
+                <div><label style={LBL}>貸出日</label><input type="date" value={rentalEditForm.startDate} onChange={e=>setRentalEditForm(p=>({...p,startDate:e.target.value}))} style={INP}/></div>
+                <div><label style={LBL}>返却日</label><input type="date" value={rentalEditForm.endDate} onChange={e=>setRentalEditForm(p=>({...p,endDate:e.target.value}))} style={INP}/></div>
+              </div>
+              <div style={{background:'#f0fdf4',borderRadius:6,padding:'8px 10px',fontSize:11,color:'#6b7280'}}>
+                <strong style={{color:'#065f46'}}>📅 {rentalEditModal.carName} の既存予約：</strong>
+                {((rentalRes||{})[rentalEditModal.carId]||[]).filter(r=>r.id!==rentalEditModal.resId).length===0
+                  ?<span style={{marginLeft:6}}>なし</span>
+                  :((rentalRes||{})[rentalEditModal.carId]||[]).filter(r=>r.id!==rentalEditModal.resId).map(r=>(
+                    <div key={r.id} style={{marginTop:3,color:'#dc2626'}}>
+                      🚫 {r.user}：{r.fm+1}/{r.fd}〜{r.tm+1}/{r.td}
+                    </div>
+                  ))
+                }
+              </div>
+            </div>
+            <div style={{display:'flex',gap:8,marginTop:18}}>
+              <button onClick={saveEditRental} style={{flex:1,padding:'11px 0',background:'linear-gradient(135deg,#059669,#047857)',color:'white',border:'none',borderRadius:9,fontWeight:700,cursor:'pointer'}}>✓ 更新</button>
+              <button onClick={()=>{onDeleteRentalRes(rentalEditModal.carId,rentalEditModal.resId);setRentalEditModal(null);}} style={{padding:'11px 14px',background:'#fee2e2',color:'#dc2626',border:'2px solid #fca5a5',borderRadius:9,fontWeight:700,cursor:'pointer'}}>🗑</button>
+              <button onClick={()=>setRentalEditModal(null)} style={{padding:'11px 14px',background:'#f3f4f6',border:'none',borderRadius:9,fontWeight:600,cursor:'pointer'}}>戻る</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 });
@@ -5185,6 +5607,17 @@ const LoanerGrid=memo(({loanerRes,loanerMonth,setLoanerMonth,onAddRes,onDeleteRe
 // ============================================
 //  メインアプリ
 // ============================================
+
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║  BLOCK-E: メインアプリ・画面レイアウト                          ║
+// ║  【要注意】カレンダー・スケジュール・ヘッダー固定が含まれる     ║
+// ║  含まれる内容:                                                  ║
+// ║  - AppInner / App（メインコンポーネント）                       ║
+// ║  - カレンダービュー・スケジュールビュー                         ║
+// ║  - ヘッダー固定・スクロール制御                                 ║
+// ║  ⚠️  高さ計算（height/paddingTop）の変更は十分注意すること      ║
+// ╚══════════════════════════════════════════════════════════════════╝
+
 function AppInner() {
   const nowDate = new Date();
   // -- ログイン後は今日のスケジュールからスタート --
@@ -5318,6 +5751,7 @@ function AppInner() {
   const [locks,      setLocks]     =useShared(STOR+'locks',{},3000);
   const addRentalRes    = useCallback((carId,rec) => setRentalResData(p=>({...p,[carId]:[...(p[carId]||[]),rec]})),[setRentalResData]);
   const deleteRentalRes = useCallback((carId,resId) => setRentalResData(p=>({...p,[carId]:(p[carId]||[]).filter(r=>r.id!==resId)})),[setRentalResData]);
+  const replaceRentalRes = useCallback((carId,resId,newRec) => setRentalResData(p=>({...p,[carId]:(p[carId]||[]).map(r=>r.id===resId?{...r,...newRec}:r)})),[setRentalResData]);
   const [loanerUndo, setLoanerUndo]=useState([]);
   // LoanerGridのpinnedRes/hoverResを親で管理（グリッドの再レンダリング防止→scrollLeft保持）
   const [loanerPinnedRes, setLoanerPinnedRes]=useState(null);
@@ -5345,10 +5779,12 @@ function AppInner() {
   const [showHoliday,    setShowHoliday]    =useState(false);
   const [showDayOff,     setShowDayOff]     =useState(false);
   const headerRef=useRef(null);
-  // ヘッダー高さをCSS変数にセット
+  const [headerH, setHeaderH]=useState(90); // ヘッダー高さ（デフォルト90px）
+  // ヘッダー高さをstate＋CSS変数の両方にセット
   useEffect(()=>{
     const update=()=>{
-      const hh=headerRef.current?.offsetHeight||0;
+      const hh=headerRef.current?.offsetHeight||90;
+      setHeaderH(hh);
       document.documentElement.style.setProperty('--header-h', hh+'px');
     };
     update();
@@ -5737,7 +6173,7 @@ function AppInner() {
     window.addEventListener('resize',updateH);
     return()=>window.removeEventListener('resize',updateH);
   },[]);
-  useEffect(()=>{const h=()=>{setShowStaffRegister(true);};document.addEventListener('openRegister',h);return()=>document.removeEventListener('openRegister',h);},[]);
+  useEffect(()=>{const h=()=>{setShowStaffRegister(true);};document.addEventListener('openRegister',h);const hs=()=>{setShowStaffSettings(true);};document.addEventListener('openStaffSettings',hs);return()=>{document.removeEventListener('openRegister',h);document.removeEventListener('openStaffSettings',hs);};},[]);
 
   const isClosed=useCallback((date)=>{
     if(!date||!(date instanceof Date)||isNaN(date.getTime()))return false;
@@ -6465,6 +6901,12 @@ function AppInner() {
                   <span style={{width:22,height:22,borderRadius:'50%',background:userStore.color,color:'white',display:'flex',alignItems:'center',justifyContent:'center',fontWeight:800,fontSize:11}}>{currentUser?.myNumber??currentUser?.id}</span>
                   <span style={{fontWeight:700,color:userStore.accent,fontSize:12}}>{currentUser?.name}</span>
                   {currentUser?.badge&&<BadgeIcon badge={currentUser.badge} size={18}/>}
+                  <button onClick={()=>document.dispatchEvent(new CustomEvent('openStaffSettings'))} title="スタッフ管理"
+                    style={{background:'none',border:'none',cursor:'pointer',color:'#6b7280',display:'flex',alignItems:'center',padding:'1px',borderRadius:3}}
+                    onMouseEnter={e=>e.currentTarget.style.color='#4338ca'}
+                    onMouseLeave={e=>e.currentTarget.style.color='#6b7280'}>
+                    <Users size={14}/>
+                  </button>
                   <button onClick={()=>setShowHoliday(true)} title="休業日設定・バックアップ"
                     style={{background:'none',border:'none',cursor:'pointer',color:'#6b7280',display:'flex',alignItems:'center',padding:'1px',borderRadius:3}}
                     onMouseEnter={e=>e.currentTarget.style.color='#4338ca'}
@@ -6539,8 +6981,8 @@ function AppInner() {
 
       <main style={{maxWidth:1700,margin:'0 auto',
         ...(view==='schedule'
-          ? {height:'100vh',overflow:'hidden',padding:'0',paddingTop:'var(--header-h,90px)',display:'flex',flexDirection:'column'}
-          : {padding:'20px 16px',paddingTop:'calc(var(--header-h,90px) + 20px)'}
+          ? {height:'100vh',overflow:'hidden',padding:'0',paddingTop:headerH,display:'flex',flexDirection:'column'}
+          : {padding:'20px 16px',paddingTop:20,marginTop:headerH}
         )}}>
 
         {/* -- カレンダー -- */}
@@ -7129,7 +7571,7 @@ function AppInner() {
                           const origIdx=row._origIdx??dispIdx;
                           const {_origIdx,...cleanRow}=row;
                           rows.push(
-                            <InspRow key={`${origIdx}-${dispIdx}`} row={cleanRow} idx={origIdx} dispNo={dispIdx+1} dk={dk} onOpenModal={handleOpenModal} lockInfo={getInspLock(dk,origIdx)} loanerRes={loanerRes} vsId={vsId} onApprove={handleApprove} isOverLimit={false} setItems={setItems}/>
+                            <InspRow key={`${origIdx}-${dispIdx}`} row={cleanRow} idx={origIdx} dispNo={dispIdx+1} dk={dk} onOpenModal={handleOpenModal} lockInfo={getInspLock(dk,origIdx)} loanerRes={loanerRes} loanerResH={loanerResH} loanerResS={loanerResS} vsId={vsId} onApprove={handleApprove} isOverLimit={false} setItems={setItems}/>
                           );
                         });
                         // ② 台数制限超過バナー（7台目以降がある場合）
@@ -7151,13 +7593,13 @@ function AppInner() {
                             ?{...cleanRow,pendingApproval:false}  // 承認済み：承認待ちバッジ消す
                             :{...cleanRow,pendingApproval:true};  // 未承認：承認待ちバッジ表示
                           rows.push(
-                            <InspRow key={`waiting-${origIdx}-${pi}`} row={displayRow} idx={origIdx} dispNo={normalRows.length+pi+1} dk={dk} onOpenModal={handleOpenModal} lockInfo={getInspLock(dk,origIdx)} loanerRes={loanerRes} vsId={vsId} onApprove={handleApprove} isOverLimit={false} setItems={setItems}/>
+                            <InspRow key={`waiting-${origIdx}-${pi}`} row={displayRow} idx={origIdx} dispNo={normalRows.length+pi+1} dk={dk} onOpenModal={handleOpenModal} lockInfo={getInspLock(dk,origIdx)} loanerRes={loanerRes} loanerResH={loanerResH} loanerResS={loanerResS} vsId={vsId} onApprove={handleApprove} isOverLimit={false} setItems={setItems}/>
                           );
                         });
                         // ④ 追加行（isNew=trueで開く）
                         const addDispNo=normalRows.length+waitingRows.length+1;
                         rows.push(
-                          <InspRow key={`add-${addIdx}`} row={{...blankInsp()}} idx={addIdx} dispNo={addDispNo} dk={dk} onOpenModal={(type,dk2,idx2,slot)=>handleOpenModal(type,dk2,idx2,slot,true)} lockInfo={null} loanerRes={loanerRes} vsId={vsId} onApprove={handleApprove} isOverLimit={false} setItems={setItems}/>
+                          <InspRow key={`add-${addIdx}`} row={{...blankInsp()}} idx={addIdx} dispNo={addDispNo} dk={dk} onOpenModal={(type,dk2,idx2,slot)=>handleOpenModal(type,dk2,idx2,slot,true)} lockInfo={null} loanerRes={loanerRes} loanerResH={loanerResH} loanerResS={loanerResS} vsId={vsId} onApprove={handleApprove} isOverLimit={false} setItems={setItems}/>
                         );
                         return rows;
                       })()}
@@ -7383,7 +7825,7 @@ function AppInner() {
               hoverRes={loanerHoverRes}   setHoverRes={stableHoverSetter}
               storeLoaners={currentLoaners} storeInfo={STORES.find(s=>s.id===vsId)}
               rentalCars={dynRentalCars} rentalRes={rentalResData}
-              onAddRentalRes={addRentalRes} onDeleteRentalRes={deleteRentalRes}
+              onAddRentalRes={addRentalRes} onDeleteRentalRes={deleteRentalRes} onReplaceRentalRes={replaceRentalRes}
               onPickRental={handlePickRental}
               onOpenSettings={()=>setShowLoanerSettings(true)}
               tireData={carTireData}
@@ -7526,7 +7968,12 @@ function AppInner() {
         setItems={setItems}
         onOpenSetItemEdit={()=>setShowSetItemEdit(true)}
         allCars={currentLoaners}
-        fromCustList={fromCustList}/>
+        fromCustList={fromCustList}
+        inspData={inspData}
+        closedDays={closedDays}
+        closedDates={closedDates}
+        overrideOpenDates={Array.isArray(overrideOpenDates)?overrideOpenDates:[]}
+        inspLimits={inspLimits}/>
 
       {/* -- 休業日設定 -- */}
       <HolidayModal isOpen={showHoliday} onClose={()=>setShowHoliday(false)}
@@ -7570,6 +8017,24 @@ function AppInner() {
         title="備考・メモ クイック編集"
         items={Array.isArray(memoItemsRaw)?memoItemsRaw.map(si=>({...si,text:si.text??si.content??si.label??''})):DEFAULT_MEMO_ITEMS}
         onSave={v=>setMemoItems(v)}/>
+
+      {/* -- スタッフ新規登録 -- */}
+      <StaffRegisterModal
+        isOpen={showStaffRegister}
+        onClose={()=>setShowStaffRegister(false)}
+        staffListH={dynStaffH} staffListS={dynStaffS}
+        onSave={handleRegisterStaff}/>
+
+      {/* -- スタッフ設定（編集・削除・店舗変更） -- */}
+      <StaffSettingsModal
+        isOpen={showStaffSettings}
+        onClose={()=>setShowStaffSettings(false)}
+        staffListH={dynStaffH} staffListS={dynStaffS}
+        onUpdate={handleUpdateStaff}
+        onDelete={handleDeleteStaff}
+        desktopListH={desktopListH} desktopListS={desktopListS}
+        onDesktopSave={handleDesktopSave}
+        onDesktopDelete={handleDesktopDelete}/>
     </div>
   );
 }
