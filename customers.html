@@ -2,8 +2,14 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <title>Hub a Nice Day - 顧客リスト</title>
+<meta name="theme-color" content="#1E3A5F"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Hub a Nice Day"/>
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAABmJLR0QA/wD/AP+gvaeTAAAcDElEQVR4nO2deXRc1Z3nP/e9V4tKKlVp3yXLtix5N7Kx8RIwoQOBkKTJAEmHYBzg0JPQ6TQ9HQYyfc7QPZPTk0k6Z8I0p7tJJ+Pg0KRDk3QzASYh7BizgzHGC14kWbaszVJpKam2d+cP2cQ2tamqVK9KdT/nsKjufff+3u/d77v33VWQTW64QW86UdypCblKmrIdoS0BuRAoBsrO/NeeVZsU2WYa8AnwmXBawAGk2COEeM8WCb55+LWHx7JpjJjrDBo23NSoa7brEfIK4FKgdK7zVOQtIeBF4HHNFI93vbqja64znBMBNG68oUgTxdcj5DYknwS0uchHMa+RIH4rBPd371rw/+A+cy4yyagA2jff6p6Ska8Bfw7UZDJtRUHzIUJ+p2fXwp2ZFkJGBLB27R22IWfwz6SU9wDlmUhToYjCO0i+1bP7p89kKsG0BdC48ebLNKE9ACzPgD0KRWIkv4hE5NdPvP7QcLpJpSyABVu3O2WQv5XIr6WTjkKRIn1CiNu7d+14Mp1EUiq4jRu2t2m6/BfgonQyVyjSREr4wfEG/3/m0UcjqSQwawE0X7LtD9DEY6TbnSlTyV2hiIZ80h6J/FEqYwizKoLNm2+5EclO1GCVIteQfBAxw1edeO3h3tlclnT/fPOmW+5A8giq8CtyEcEyXTeeX7hlW/PsLkuCM2/+R1ADWopcR3JMF8blx175cXcy0RMKoGXTVz8pMZ8EHGkbp1BkhyNBXdt46qX/M5goYtw3euOG7W0S81eowq/ILxbZI+a/Lr76GwnLbUwBLNi63Xmmq1NNXlPkI5cGx8YeTBQppgBkkL9F9fMr8hnJtpaN22+NFyXqN0DT5u2fEFK+ECtcocgbJJMaYl3X7h0HogV/rAZYu/YOm5Dy71GFXzEfEBSbQj7M1q1GtOCPCWDIGfwz1MQ2xfyiszmw4E+iBZz3lq/aekNJUdDVBVRkwyqFIouMS6F3HN/1k5Pn/nheDVAUdH0dVfgV8xO3kOH/ceGPH9UAC7Zud5pBeRSoy6pZCkX2iGhSrDj3g/ijGsAMyBtRhV8xv9FNYX773B+0c/7v5qybo1BkHfHlpk23LDr7lwbQuHFbA5LLrTNKocgaupDcdvYPbeZf2g2AbplJCkU2EWw/Oy4w0wSa2bRKoSgU6poDzZ8G0LjhBh3YYrFBCkV2EXwOQGs6UdwJeC02R6HIMuJqAE0TcpXVpigUFtDYtOnmFZo0ZbvVligUVqBJfb2GEEoAigJFrtCEYIHVZigUViA1VmpSSo/VhigUliBp1EC4rbZDobAEgVcDSqy2Q6GwBEmZhtrpTVG4ONROb4qCRglAUdAoASgKGiUARUGjBKAoaJQAFAWNEoCioFECUBQ0SgCKgkYJQFHQKAEoCholAEVBowSgKGiUABQFjRKAoqBRAlAUNEoAioJGCUBR0CgBKAoaJQBFQaMEoChooh4erMg8QjOwe1qwe1owiuuwldRilNQCEB7vIzTZT3iyj6Cvm6CvG2mGLba4MFACmCuEwO5ppah6JY6yNuyeFoQW3d16eRuO8raP/pZmmKCvm8DIIaYG9hL0dYGUWTK8sBDNm25Rns0UQuAoa6O4fj1FVavQHJnZdC8SGGN6cC+TJ18jMHJYiSGDKAFkAN1egqthE8WNm7EVV89pXuHJfiZ6d+Hv3U0kNDGneRUCSgBpoDncuFuuwN1yOULP7gZ7ZjiA/8QrjB37LZHp0azmPZ9QAkgBzebCs/izFDdtidmuzxbSDDHR8yJjh5/ADE9Zaks+ogQwG4SguH4D3vYvoNlza1NtM+Rn7MgTTHQ/j5Sm1ebkDaoXKEkMVxUVq7Zj9y602pSoaDYX3o4bKKrp5PR7OwhPDVltUl6gaoAkKG64BO+yL6LpTqtNSQoZnmb04GNMHH/ZalNyHlUDxEFoBmUrvkJx/Ya007IbgmKXwF0ELofA6RC47AIAf1AyHZD4A5LxKZj0S4Lh1N9LwnBStvwm7N6FjOz7ZzWoFgclgBjothIqLrrjvAGq2WDTocwt8JZoeNxQdKawn89MIS81oNQlgN/HmQrA6IRkdEIyMh4hHIl2fXyKGzZic9Uw+O4/YAbGU7qP+Y5qAkXBcFVRffE30YsqZnWdrkGlR1BVplNWIhAiM66VUjAybjLokwyNmkRm+Y0bnhpi8PUfqu+CKCgBXIDNVUPV+m+iO8uSvqakSFBbrlFTJtD1OTQOiERgYERyYtjEP538owtPjzD0xv8iNDkwh9blH0oA52AU11K9/i50R2lS8Yud0FyjU+UR57ZesoOE4XGTnn6TcX9yl0QCPgZf/4ESwTmo6dBn0O0lVK39WlKF326D9maNtUsMqrwWFH4AARWlGhctNljSpGEzEhuhOzxUrvtGxuYozQeUAACh26ns/DqGK/E8nvpKjXXtBjVlmjUF/0IE1JZrXNxhUFeR+HEaRZVUdd6JpjuyYFzuowQgBBWrvord2xo3mt0QLG/VWNygYcxxOz8VDF3S1qixcqGOwxZfmXZPC2Urt2XJstym4AXgbrmCopo1ceOUuARr2nQqSnPfXWVuwUVtBm5X/Hiu2k5KWi7LjlE5TO4/0TnE7mnBu+TzceNUlQnWLNZx5tFpynabZNUigypv/Mfrbb8ee2lzlqzKTQpWAEK3U7Hmdogzm7OuQqOjSUfLhbb+LNE16GjWqC2PbbzQDMrX3Jr1qdy5RMEKwLP4WoyiypjhdRUabQ0aIg8L/1mEgLZGPa4IbK4aShd9OotW5RYFKQCbuwF3yydjhleUChY35EgvT5qcFUG87xd365XYSpuyaFXuUHgCEILyFTeDFr0rx+2CjhY9r9/8FyIEdLRolBRFvykhdMqX/RHz6qaTpOAE4Kpbh93TEjXM0GFps4E+D72ia7BsgY6hRx/4t3tbcdVclGWrrGcePuo4aAaexZ+NGbykScM5j8eHnHZY0hT7o9/Tfl3cToH5SEEJwN18GYarKmpYTZmg0jP/3VHpEVTH6B41iiopadqcZYusZf4/8TMIzcDd+qmoYTYDFtbn4PDuHLGoQcOmR2/vl7ZeVVC1QMEIwFW/Ad3hiRrWWqthK5xnjs2Alrroj153llFce3GWLbKOwhCAEJQuuCJqkMspqC4vDDecS125wOWMUQssurJgeoQK4sk7K5djlNRFDVtQK/JypDddhICWmug3bhTXUlS5NMsWWUNBCKCk6RNRf3c5RV5McJsrqjwarhi9XsWN0X0235j3T193eCiqXB41rLEqv6c6pI2AhqroH//O6pUxv5nmE/NeAMWNm6OO+tp0qPYWcumfoaZcRB0cE0KnuOESCyzKLvNfAPXRezSqyjW0eX/3idEEVHuj1wJKAHmO3d2AUVwbNay2bF7f+qyoiTFb1CiuxRaj82C+MK97v4tqOmOGvX1I7ZaWDK7aTnyHn7DajDljXr8GXbWFN7kr07jq1lltwpySW/sCCQPdvQJRshytqBEMD0Ir3NVK84LINGZoBDl1BNP3NuZUj9UWnUfONIE090qMms8ibOVWm6LIJLoTTa8DZx162RbMiX2ETv0bhEastgzICQFoGNWfQa9QOxQUAlrJchytrYR6f4Lp77LaHOu/AVThL0B0F7bmP0ZzLbDaEmsFoLlXqsJfqAgbRsM2MKzdptE6AQgDo/pay7JXWI8wSrFZXAYsE4DuXoGwz27/fcX8QyvtRDiiD1ZmJX+rMhbuFVZlrcglhEAvjT1gOddYJwBng1VZK3IMraTDurytylgYyR1CoZj/WDn2Y9k4gNBmVmLURIa56/RDXDK9F5d5/knnE5qL54vW8UDZlxnW5//c9Hymzn2aey59hM0t+yi2T8eNOx4s4neHO/nByzcw5C8FC4+ftXQgrCYyzMMn76HUnIgaXmL6uXbyRdYED3Jz3d8wKYqybKEiGercp/nVTffhcUZ/jhfitk9x3bJdrG04xH/45/uYCFj3XC0dB7jr9EMxC/+5NIb6uXPk51mwSJEK91z6SNKF/1yaPYPctemXc2BR8lgqgEum9yYd98rJV+bQEkU6bG7Zl/K1n2l/LYOWzB5LBXBhmz8eydQUCmtI1OaPRyo1RyaxfC6QQmEllgqgX09+JHhCS3DolcIy+sZT78YcD1rbsWGpAF50Jb/aaLdz1RxaokiHZ4+mvvLu5S5rZwRYKoC/995Ijy3xomuf5uaHZV/JgkWKVPjhri/QNTr7+TyjUyX8zxe/OAcWJY/uaVpznxUZG1VXEhQ2nii5lLLIGA3hQRwydF6cSVHEC6513F315wwYauJcrhKM2Pj3/ZsoL5qg0TOIwwjFjT8RKOKZoxfxp7/+E05NzDSfIkO/zYapH8OyNcGOpd+3IltFjhLY/xeW5Kt6gRQFjRKAoqBRAlAUNEoAioJGCUBR0CgBKAoaJQBFQaMEoCholAAUBY0SgKKgUQJQFDRKAIqCRglAUdAoASgKmhw4IGNukdN9mCPvICf2Y/pPQGAQGZlZjC90Fzgq0VwNCPcyNO9FCKd1G7VmA+WP85mXApAyghx+mXDfU8jxA7HjhccgPEZk8igMvgSAKO3AqLkGrXILiPlRQSp/xGbeCcAcfYfw0QeR030pXS/HDhAaO4Do/ReM1tvRvPl90qTyR3zmjwDMAKGjP8Ic+F1GkpNTJwh98FfoNVditN4O+XZapfJHUsyPOi3kI7j33ow97HOJ9P+W0PvfRobGMp72nKH8kTT5L4CQj+D730ZOHp2zLMyJw4Tevzc/Hrryx6zIbwGYAYIf/BVy6sScZyWnThDe/9dgxt/xwFKUP2aNdQKIpL6f5FlCR380p2+6CzEnDhM+9k9Zy2+25K0/zPTLQqpY9hEswyMIPfGmWLEwR99Juo0rNI2a2jqqaurwlHpxFM1sxxeYmsI3NsrgqT76+/uQppkwrUj/b9AqNqB5rTvXKhr57A8ZHk/52nSxTADmxAF0R2oCkDJC+OiDScWtqatnScdyilzFHwtzlZTgKimhrr4Rv3+SQ/v3MXDqZMI0w10/wb56Tc70i+e7P+RUT0rXZQLLnqDpewtkantyyaGXEvZrCyFoX7qC1Z3roz7sC3G5ilmzdj3tS1cghIifv7+XyPCuWdk8l+S7PyITqZ8vkC7WCSBwCnP8nZSuDZ96KmGcJR3LaVm4eNZptyxcTFv7soTxzFNPzDrtuSKf/SFDpzHHP0jp2kxgaR0e7v/1zPD7LJDTfcjxg3Hj1NTVp/Swz7JgURvVNfGbZ+bYQeT0QMp5ZIp890e4/3GQ4VRNSxtLBSDDY4R7d4JMvivNHIlfawhNo61jebqm0b5sJUKL5x6J6UutBssk+eyPyPBzmOPvp2dYmlj+FWdOHSPU84/IiD+p+HJif9zwmto6XEm0cRNR5HJRXRN/JqTps67qPku++iMy/BzhwSfTNSttLBcAgOnvInT0B0m9DUx/b9zwqgRV9Wyoro2flpyOb0s2yDd/yOAQod4dhAeeSLkTJJPkzGQ4GR4l1LsDzdmE5l2H5lqIsHlBu+AIncBw3HRKPWUZs8lTmiCtwGDG8kqZHPeHNAMQ8iEDvUTG38cc3wcykjGb0iVnBHAWc/o45qnjsSMkGDRxOB0Zs8VeFP8Ecxket2xf+49Q/kiLnGgC5SoiB6roXGI++iP/BJBgtDEwnbl5JdOJ0sqFkWDlj7TIQ4vjt9rGfKMZyyphWglsyQrKH2mRfwLQ469EGjyV2tK/aAycOhU/Qi6silL+SIv8E4AR/2Dl/lN9+P0TaWcz5Z9kYCBB4bFZe8gzoPyRJvkngAROltLk0P70B6gOfvB+4unACQpfVlD+SIv8E4BmAyN+d9zAqZN0Hz2cchbHjnzIQH+Ct53hnLHFapQ/0iL/BADg8CSMcujAPrqOfjjrpLuOfMjhg0m8MR3eWac9Zyh/pIzuaVpzLzk4IBYXzQGhiYQjisNDg4yP+Sj1erHZ4n+g+f0T7NvzDj3dSSwp1O1QVAXxp8lnD+WPVAmI5k23nAJqrLZk1oT8MJF4tRKAEBrVtbVU19ZResESwLGxUQb6TjHQ34eUiZcAAuCuB8OVquVzg/JHKgyJlk23HJSwxGpLUsI/CAFfdvN0eMBVld08k0X5Y3ZIjmkS4ky8yXGKKsHI3FyXhBiOmTxzFeWP2SHwaSDiz0HO5ekfQkBxfcLBoIyg26G4YSbPXEX5Y1ZIwTFNCDO+AHL9/jQdShpAj98VmBaGYyaPuCuicgTlj6QRyINaJMzrVhuSNpoO7gawl2Y+bYcHShpn8sgXlD+SQkpxSACiedMtx4EGqw3KCOGpmY/BSDC9dHQ7uCrztXfj9yh/xESY2loNkBL5G6uNyRhGEbibobg24Qhp9OudM9eWNs2Ph638EYvR7qaJPWcHwB4HbrXSmowiAHvJzD+RMET8EJqaeQuaYTjbv62JmeF7zT4zp8Yoysvh/IQof3wMKXiORx+NGADVAeeTg87AKSTz70Ao3QC9dG7aw/mI8gcAmskzcGYu0FtvPRhC8pC1JikUWSMiwuIxOGcynCkjPwJyZ7m+QjFHCMHTXW/sOAXnCKB3988OAz+3zCqFIluYYufZ/z1vJEOY5neAJGdAKRR5iOBUhMlfnf3zPAF0v7pzP/BI1o1SKLKElPJ7vbsfnTr798fGsrWQ+Asgy1MKFYqsMDxtnzrvJJGPjWePnnx3orRpdVAgrsqeXXOJQdWV93PJp/+QhpJjHO+yfkvzaIjya1m//Vu0r1tK+OArjKU5cKuIgpTf7nv5kZfO/SnqSrDj9p77m4MtXwGyfCy4jnfLd7hodQWMP83bP/sFPnPm95KL/5J16xsR/pfY89BDnM75/qrf34uQAUZf+W+8824/EoHRfidb/mD1+fcSHmGi/ygR+ghm496KPsHqW7ZRoQNSYppBzOlxpkeOMHToWY4fOEool2cCzxKJ3HPc0fPAhb9Hn873/PNhU0ZuBKw7vWw+IRx4Oq+jxhV7aq0c28UHv/wb3vrlTvr92Sx5kvB4DxOnhwkbXkoaN7Dg8ru5+JrLKM7/+W5nkVLKb/L88x87iSPmWuDe3T873LL5lrukJGfPBRX1X2LjH16B03yP/Tv+jr5pib7kTj7xqTWIiWd5d+cjjJzbp2XUUXvZ1bS2tWKXw4zs+wUHX9/LdMx+Lw3XsltZuqaNIlcJNpuGOT3IePeLHN39DKNTSRZUaYJzDQvWLmHwpUPR76X8Wi7+4ucpkR/y4cPf4/i4BM1L2arP0bJ0JaUeN1pkkunh3Xz45GMMT0tAYFRtZMH6K6ipq8NuhAmcPkj/W//KsSP9SXbnRfC9+UP27B8HzYO38zZWrF+Ks+UG2pfv4533hpDJ+EFfRNuXvkWTJ8Twc3/Jnv0+QFC05m42bFoEA4/x+mO/Iava/ghxf+/unS9EC4k7obt7109/jLBmhFi4LqbjC/ey9vp7WXv93SxbVh3HWJnUwh3b4s/RWuZjpPc4YXsNFZ1/zPLVdXGWPAjs3iqEbz/9e5/i2Fu7GItU4V16IysvW4c9ybUScuANBkbBtew6GsqTnEMvXJRv+RZrNn2Cco/A3/0KfUcOE3TW4jzz2tK8l7Py89tpbqki1PscXXv2EipdTctV/4mORSlMdTB9jL71c3qHIiDslLYuP3OPSfghcowTH3Rj4qCs42KcAhAVVC1cgEYI34HXSfZ9kWHecPsm744VmHA3CHtp6R1B39gC4NJMWpUQ3UtxTbJbbQhkQgUIGHySdx9/Cr9px7vlv3LR6mrcHesp3vPvTER9XUbwvfY93oyEQehouo2TYx42fnINRsNy3NobDCfTXo900f2qiffTl9C84WKGu5K4xnkRTUurEAQYfeW7vPve4MwbXegIJKBTsvwKvA6BHHyGAy8+y7QpGDbrWLuukZrVGzh29OnZFzo5xNRYBKp0cJZiExCQyfjBxH/wBU6vbaWydiO1Zc/SHV5DZbUOoX30HRm1YnHhqDDML+7b92jMLoWEAjj81P8ONG687TpNhF4B0Z5Z+2IjY30EJ7hOxNyhWBIe6WXKBAjhHx5AUo1wlcV5kzsobruets5OPF432rnL/2zOj3ehxb4bQl2P0927hiWtn2dBMP6hFgCiuAKHJkCeZrTv9O+bMzJypiBpOEu8M/6oupZ1X732/BxLq3FqMDXbD2pRSVGpDkiYHj/zIZykH/xv03vkOiqWNVDbsZCByU5KNQge2cVQ9l//QYS4sfvFncfiRUpqP6De3T8+3brptqsiMvwcgtbM2JcBIuEzBcOJYRcQ0HFVxN7hxSirp0jsxS8NXBXVCED6RwjGeDaiZDNLtl6GVxtn+M0HOd7rg/rPsWp9x+x3FJNDnHz1Weq/cA3V7RUzeceLPjlMwJSU6OV4assQg0Mz8YWORgRTmgQmfEgqYfAZ9u3ey/lfeGMxarU4aKV4O79EY6UOMoDv2D6CcjZ+mGZk3y78HZ/B1X4tbZOtaPgYOrCPLJ8DGRHw5e5dO55OFDHpDbGOvfLj7oVbtm0Nm+JZYFFa5mUI6etmIiRx2RbRcvmXcY5VU90x860QtXBVXcuqzzYyOlVJ+aIqhAwwfuAN/LEKihAfpSPQ0ItbqVy0AC3FddLm4NMcPbyZle1JNO2m3+H4/msoX1FN2eZ76Gx4j/GAk+IaO4O/foDeiQjj+59ldNmNlFVeQstSk8GhKTRXOcXVS3Gffpjdx5M5w0zHs+6brFtpYHfX4HQaICNMdz/KoX2DSGYO2U7WD3LwZU6e+hRt9cupcIH0vUHfyawOakSEkP+xe9dDjyUTeVYvsqMvP9QTiYS3IrH+eESA6bc58vwL+CZD2OsvpqpsgJ49B2L2foQO/196xioob1mAPTzA8DsPsnfPyZjx5fguPnz5Vcb8Dso6b6ZtTQv+7kOEU63N5STDrz/BSKwq57y4fk6//D3efWUXIz5JyYJN1Le14wj2M3XmdWqefoa9//ZTerqHsTVtpXXD1TS2deAMHqKvK9lt0QWGuxl3RRWGOcpE72t0Pftd3nzyBSbPNJ9m5Qc5TP/7e880nSJMHnqV8eyN2QQEfLF710NJ91ym9C5bvOGm0qCuPwLimlSuV8xzHOtZdcvtVGrHOPzz79IzmpX5laOaJq7rennH87O5KKV9LQ6/9vBYT8PU56Tg++T2zkGKbCIqKF9+JQsvvRqvAcGu39Hny0rhf0MYZudsCz9kYNefls3brpZS/BNQn25aijxHX0nH9m9Qbw8w3fccB57+Facn5/T9KEHc7/ZN3h2vqzMeGdn2qnHjbeW6CD8g4UuZSE+hSIRE7hGmuLPn1Z/uSiedjO771rJ52+VSiu8DnZlMV6E4hyGk/O89jp4Hos3tmS1zsPHhfVrzxmNfEYL/kre7TitykT6J/H5wQv5j/3s7JzOV6Bzu/Hmf1rix60qB/FMhuIp8PY1GYSURIXgaU+wUDn7Z9fyOzB16fIasbH27cMu25khEfFYKPg9cBuTfeZqKbDEi4AUkvxNh8djZ3Rvmiqzv/bx4w02lYZut04yYq4UQq01YKsCLwIvEC8zhtsaKHCAITACjwJgUHBNSHJLIg5qp7elumtjDo49mbejs/wMrYeJPy2tyhwAAAABJRU5ErkJggg=="/>
+<link rel="manifest" href="manifest.json"/>
 <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
@@ -69,6 +75,10 @@ const loadFileChunked=async(name)=>{
 const saveFilesIndex=async(files)=>{
   const index=files.map(f=>({name:f.name,count:f.customers.length}));
   await sSet(STOR+'cf-index',index);
+};
+const deleteFileFromCache=(file)=>{
+  const sn=safeName(file.name);
+  try{localStorage.removeItem('hub-cf-'+sn);}catch(e){}
 };
 
 const COURSES=[
@@ -298,6 +308,14 @@ const parseExcelFile=async(file)=>{
         const cStore  =fc('入庫店舗','店舗');
         const cStaff  =fc('担当');
         const cNote   =fc('備考');
+        const cPhoneHome   =fc('自宅','tel（自宅）','自宅電話','自宅tel','tel(自宅)');
+        const cPhoneMobile =fc('携帯','mobile','tel（携帯）','携帯電話','携帯tel','tel(携帯)');
+        const cAddress     =fc('住所','address','所在地','住居','お住まい','〒','郵便');
+        window.__lastImportCols={
+          phoneHomeHeader:cPhoneHome>=0?headers[cPhoneHome]:'(未検出)',
+          phoneMobileHeader:cPhoneMobile>=0?headers[cPhoneMobile]:'(未検出)',
+          addressHeader:cAddress>=0?headers[cAddress]:'(未検出)',
+        };
 
         const fileName=file.name.replace(/\.[^.]+$/,'');
         const customers=[];
@@ -320,6 +338,9 @@ const parseExcelFile=async(file)=>{
           const storeRaw=String(row[cStore>=0?cStore:null]||'').trim();
           const staff  =String(row[cStaff>=0?cStaff:null]||'').trim();
           const note   =String(row[cNote>=0?cNote:null]||'').trim();
+          const phoneHome   =String(row[cPhoneHome>=0?cPhoneHome:null]||'').trim();
+          const phoneMobile =String(row[cPhoneMobile>=0?cPhoneMobile:null]||'').trim();
+          const address     =String(row[cAddress>=0?cAddress:null]||'').trim();
 
           // セル背景色からステータス取得
           const cellRef=XLSX.utils.encode_cell({r:i,c:cName>=0?cName:0});
@@ -354,12 +375,12 @@ const parseExcelFile=async(file)=>{
           customers.push({
             custId,rowIdx:i,
             expiry,name,no,carType,
+            phoneHome,phoneMobile,address,
             dm1Date,dm1Book,dm2Date,dm2Book,
             entryDate,tokuten,
             course:courseObj?courseObj.id:null,
             store:storeId,staff,note,status,
             bookingTime:'',
-            // スケジュール連動フラグ
             linkedInspDate:'',
           });
         }
@@ -695,9 +716,19 @@ const BookingModal=({customer,inspData,loanerResH,loanerResS,loanerListH,loanerL
   });
   const [showCal,setShowCal]=useState(true);
   const [selCarId,setSelCarId]=useState(null);
-    const [selDays,setSelDays]=useState([]);
+  const [selDays,setSelDays]=useState([]);
   const [saving,setSaving]=useState(false);
   const [err,setErr]=useState('');
+  // キーボード操作用state/ref（Hooksはreturnより前に全定義）
+  const [focusField,setFocusField]=useState('time');
+  const [showTimePicker,setShowTimePicker]=useState(false);
+  const timeRef=useRef(null);
+  const noteRef=useRef(null);
+  // モーダルを開いたとき入庫時間にフォーカス
+  useEffect(()=>{
+    const t=setTimeout(()=>{setFocusField('time');timeRef.current?.focus();},150);
+    return()=>clearTimeout(t);
+  },[customer.custId]);
 
   const dynListH=(loanerListH&&loanerListH.length>0)?loanerListH:LOANERS_H;
   const dynListS=(loanerListS&&loanerListS.length>0)?loanerListS:LOANERS_S;
@@ -725,6 +756,77 @@ const BookingModal=({customer,inspData,loanerResH,loanerResS,loanerListH,loanerL
   };
 
   const courseObj=COURSES.find(c=>c.id===Number(form.course));
+
+  // ── キーボード操作ロジック（return前に定義）──────────────────
+  // フィールド順序：時間 → コース → 特典 → 備考
+  const FIELD_ORDER=['time','course','tokuten','note'];
+  const FOCUS_STYLE={outline:'3px solid #1d4ed8',outlineOffset:'2px',boxShadow:'0 0 0 4px rgba(29,78,216,0.15)'};
+  const FR=(key)=>focusField===key?FOCUS_STYLE:{};
+
+  // 時間リスト
+  const TIME_LIST=Array.from({length:19},(_,i)=>{
+    const h=Math.floor(i/2)+9,m=i%2===0?'00':'30';
+    return`${String(h).padStart(2,'0')}:${m}`;
+  });
+
+  // 次のフィールドへ移動
+  // フォーカス移動ヘルパー
+  const gotoField=(key)=>{
+    setFocusField(key);
+    if(key==='time'){setTimeout(()=>timeRef.current?.focus(),20);}
+    else if(key==='note'){setTimeout(()=>noteRef.current?.focus(),20);}
+    else{// course/tokuten: data属性でdivを探してfocus
+      setTimeout(()=>{
+        const el=document.querySelector('[data-bmfield="'+key+'"]');
+        if(el)el.focus();
+      },20);
+    }
+  };
+  const moveNext=(from)=>{
+    const cur=FIELD_ORDER.indexOf(from);
+    const next=FIELD_ORDER[cur+1];
+    if(!next)return;
+    gotoField(next);
+  };
+  const movePrev=(from)=>{
+    const cur=FIELD_ORDER.indexOf(from);
+    const prev=FIELD_ORDER[cur-1];
+    if(!prev)return;
+    gotoField(prev);
+  };
+
+  // 入庫時間キー操作
+  const onTimeKey=(e)=>{
+    if(!showTimePicker){
+      if(e.key==='Enter'||e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();setShowTimePicker(true);}
+      return;
+    }
+    const cur=TIME_LIST.indexOf(form.bookingTime);
+    if(e.key==='ArrowDown'){e.preventDefault();upd('bookingTime')(TIME_LIST[Math.min(cur+1,TIME_LIST.length-1)]);}
+    else if(e.key==='ArrowUp'){e.preventDefault();upd('bookingTime')(TIME_LIST[Math.max(cur-1,0)]);}
+    else if(e.key==='Enter'||e.key==='Escape'){e.preventDefault();setShowTimePicker(false);if(e.key==='Enter')setTimeout(()=>moveNext('time'),50);}
+  };
+
+  // コースキー操作（←→）
+  const onCourseKey=(e)=>{
+    const ids=COURSES.map(c=>c.id);
+    const cur=ids.indexOf(Number(form.course));
+    if(e.key==='ArrowLeft'&&cur>0){e.preventDefault();upd('course')(ids[cur-1]);}
+    else if(e.key==='ArrowRight'&&cur<ids.length-1){e.preventDefault();upd('course')(ids[cur+1]);}
+    else if(e.key==='ArrowDown'||e.key==='Enter'){e.preventDefault();moveNext('course');}
+    else if(e.key==='ArrowUp'){e.preventDefault();movePrev('course');}
+  };
+
+  // 特典キー操作（←→）
+  const TOK_LIST=['-','①','②'];
+  const onTokKey=(e)=>{
+    const cur=TOK_LIST.indexOf(form.tokuten);
+    if(e.key==='ArrowLeft'&&cur>0){e.preventDefault();upd('tokuten')(TOK_LIST[cur-1]);}
+    else if(e.key==='ArrowRight'&&cur<TOK_LIST.length-1){e.preventDefault();upd('tokuten')(TOK_LIST[cur+1]);}
+    else if(e.key==='ArrowDown'||e.key==='Enter'){e.preventDefault();moveNext('tokuten');}
+    else if(e.key==='ArrowUp'){e.preventDefault();movePrev('tokuten');}
+  };
+  // ─────────────────────────────────────────────────────────────
 
   return(
     <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,.55)',zIndex:1000,display:'flex',alignItems:'center',justifyContent:'center',padding:16}}>
@@ -775,12 +877,30 @@ const BookingModal=({customer,inspData,loanerResH,loanerResS,loanerListH,loanerL
               </div>
             </div>
             <div>
-              <label htmlFor="bm-bookingTime" style={{display:'block',fontSize:11,fontWeight:700,color:'#374151',marginBottom:5,cursor:'pointer'}}>入庫時間 <span style={{color:'#dc2626',fontSize:10}}>（本予約必須）</span></label>
-              <select id="bm-bookingTime" value={form.bookingTime} onChange={upd('bookingTime')}
-                style={{width:'100%',padding:'8px 10px',border:'1.5px solid #e5e7eb',borderRadius:8,fontSize:13,boxSizing:'border-box',cursor:'pointer'}}>
-                <option value="">時間を選択</option>
-                {Array.from({length:19},(_,i)=>{const h=Math.floor(i/2)+9,m=i%2===0?'00':'30';const v=`${String(h).padStart(2,'0')}:${m}`;return <option key={v} value={v}>{v}</option>;})}
-              </select>
+              <label style={{display:'block',fontSize:11,fontWeight:700,color:'#374151',marginBottom:5}}>入庫時間 <span style={{color:'#dc2626',fontSize:10}}>（本予約必須）</span></label>
+              <div data-bmfield="time" ref={timeRef} tabIndex={0}
+                onFocus={()=>setFocusField('time')} onBlur={()=>{setFocusField('');setTimeout(()=>setShowTimePicker(false),150);}}
+                onKeyDown={onTimeKey}
+                onClick={()=>setShowTimePicker(p=>!p)}
+                style={{width:'100%',padding:'8px 10px',border:'1.5px solid #e5e7eb',borderRadius:8,fontSize:13,boxSizing:'border-box',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'space-between',...FR('time')}}>
+                <span style={{color:form.bookingTime?'#0284c7':'#9ca3af',fontWeight:form.bookingTime?700:400}}>
+                  {form.bookingTime||'時間を選択（Enterで開く）'}
+                </span>
+                <span style={{fontSize:10,color:'#6b7280'}}>{showTimePicker?'▲':'▼'}</span>
+              </div>
+              {showTimePicker&&(
+                <div style={{border:'2px solid #0284c7',borderRadius:8,marginTop:4,maxHeight:180,overflowY:'auto',background:'white',boxShadow:'0 4px 12px rgba(0,0,0,0.15)'}}>
+                  {TIME_LIST.map(v=>(
+                    <div key={v}
+                      onMouseDown={e=>{e.preventDefault();upd('bookingTime')(v);setShowTimePicker(false);moveNext('time');}}
+                      style={{padding:'7px 14px',cursor:'pointer',fontSize:13,fontWeight:form.bookingTime===v?800:400,
+                        background:form.bookingTime===v?'#e0f2fe':'white',color:form.bookingTime===v?'#0284c7':'#374151',
+                        borderLeft:form.bookingTime===v?'4px solid #0284c7':'4px solid transparent'}}>
+                      {v}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
             <div>
               <label style={{display:'block',fontSize:11,fontWeight:700,color:'#374151',marginBottom:5}}>担当</label>
@@ -788,19 +908,40 @@ const BookingModal=({customer,inspData,loanerResH,loanerResS,loanerListH,loanerL
                 style={{width:'100%',padding:'8px 10px',border:'1.5px solid #e5e7eb',borderRadius:8,fontSize:13,boxSizing:'border-box'}}/>
             </div>
             <div>
-              <label style={{display:'block',fontSize:11,fontWeight:700,color:'#374151',marginBottom:5}}>車検コース <span style={{color:'#dc2626',fontSize:10}}>（本予約必須）</span></label>
-              <select value={form.course} onChange={upd('course')}
-                style={{width:'100%',padding:'8px 10px',border:'1.5px solid #e5e7eb',borderRadius:8,fontSize:13,boxSizing:'border-box'}}>
-                <option value={0}>選択してください</option>
-                {COURSES.map(c=><option key={c.id} value={c.id}>{c.name}</option>)}
-              </select>
+              <label style={{display:'block',fontSize:11,fontWeight:700,color:'#374151',marginBottom:5}}>車検コース</label>
+              <div data-bmfield="course" tabIndex={0}
+                onFocus={()=>setFocusField('course')} onBlur={()=>setFocusField('')}
+                onKeyDown={onCourseKey}
+                style={{display:'flex',gap:6,outline:'none'}}>
+                {COURSES.map(c=>(
+                  <button key={c.id} tabIndex={-1}
+                    onMouseDown={e=>{e.preventDefault();upd('course')(c.id);}}
+                    style={{flex:1,padding:'9px 4px',borderRadius:8,fontWeight:700,cursor:'pointer',fontSize:11,
+                      border:`2px solid ${Number(form.course)===c.id?c.color:'#e5e7eb'}`,
+                      background:Number(form.course)===c.id?c.bg:'white',
+                      color:Number(form.course)===c.id?c.color:'#6b7280',
+                      outline:focusField==='course'&&Number(form.course)===c.id?`3px solid ${c.color}`:'none',
+                      outlineOffset:'2px'}}>
+                    {c.name}
+                  </button>
+                ))}
+              </div>
             </div>
             <div>
-              <label style={{display:'block',fontSize:11,fontWeight:700,color:'#374151',marginBottom:5}}>特典 <span style={{color:'#dc2626',fontSize:10}}>（必須）</span></label>
-              <div style={{display:'flex',gap:6}}>
-                {['-','①','②'].map(t=>(
-                  <button key={t} onClick={()=>setForm(p=>({...p,tokuten:t}))}
-                    style={{flex:1,padding:'8px',border:`2px solid ${form.tokuten===t?'#7c3aed':'#e5e7eb'}`,borderRadius:8,background:form.tokuten===t?'#ede9fe':'white',color:form.tokuten===t?'#7c3aed':'#374151',fontWeight:700,fontSize:13,cursor:'pointer'}}>
+              <label style={{display:'block',fontSize:11,fontWeight:700,color:'#374151',marginBottom:5}}>特典</label>
+              <div data-bmfield="tokuten" tabIndex={0}
+                onFocus={()=>setFocusField('tokuten')} onBlur={()=>setFocusField('')}
+                onKeyDown={onTokKey}
+                style={{display:'flex',gap:6,outline:'none'}}>
+                {TOK_LIST.map(t=>(
+                  <button key={t} tabIndex={-1}
+                    onMouseDown={e=>{e.preventDefault();upd('tokuten')(t);}}
+                    style={{flex:1,padding:'8px',
+                      border:`2px solid ${form.tokuten===t?'#7c3aed':'#e5e7eb'}`,
+                      borderRadius:8,background:form.tokuten===t?'#ede9fe':'white',
+                      color:form.tokuten===t?'#7c3aed':'#374151',fontWeight:700,fontSize:13,cursor:'pointer',
+                      outline:focusField==='tokuten'&&form.tokuten===t?'3px solid #7c3aed':'none',
+                      outlineOffset:'2px'}}>
                     {t}
                   </button>
                 ))}
@@ -809,8 +950,10 @@ const BookingModal=({customer,inspData,loanerResH,loanerResS,loanerListH,loanerL
           </div>
           <div style={{marginBottom:14}}>
             <label style={{display:'block',fontSize:11,fontWeight:700,color:'#374151',marginBottom:5}}>備考</label>
-            <textarea value={form.note} onChange={upd('note')} rows={2} placeholder="備考・メモ"
-              style={{width:'100%',padding:'8px 10px',border:'1.5px solid #e5e7eb',borderRadius:8,fontSize:13,resize:'vertical',boxSizing:'border-box'}}/>
+            <textarea ref={noteRef} value={form.note} onChange={upd('note')} rows={2} placeholder="備考・メモ"
+              onFocus={()=>setFocusField('note')} onBlur={()=>setFocusField('')}
+              onKeyDown={e=>{if(e.key==='ArrowUp'&&e.target.selectionStart===0){e.preventDefault();movePrev('note');}}}
+              style={{width:'100%',padding:'8px 10px',border:'1.5px solid #e5e7eb',borderRadius:8,fontSize:13,resize:'vertical',boxSizing:'border-box',...FR('note')}}/>
           </div>
           <div>
             <label style={{display:'block',fontSize:11,fontWeight:700,color:'#374151',marginBottom:5}}>
@@ -870,19 +1013,19 @@ const CustomerRow=memo(({customer,onBook,onRevive})=>{
               再予約
             </button>
           )}
-          <span style={{fontSize:11,color:'#374151',fontWeight:customer.expiry?600:400}}>
+          <span style={{fontSize:11,color:'#111827',fontWeight:customer.expiry?600:400}}>
             {fmtDate(customer.expiry)}
           </span>
         </div>
       </td>
       <td style={{padding:'7px 8px',fontWeight:700,verticalAlign:'middle'}}>{customer.name}</td>
-      <td style={{padding:'7px 8px',color:'#64748b',verticalAlign:'middle'}}>{customer.no}</td>
+      <td style={{padding:'7px 8px',color:'#111827',verticalAlign:'middle'}}>{customer.no}</td>
       <td style={{padding:'7px 8px',verticalAlign:'middle'}}>{customer.carType}</td>
-      <td style={{padding:'7px 8px',color:'#64748b',verticalAlign:'middle',fontSize:11}}>{fmtDateShort(customer.dm1Date)}</td>
+      <td style={{padding:'7px 8px',color:'#111827',verticalAlign:'middle',fontSize:11}}>{fmtDateShort(customer.dm1Date)}</td>
       <td style={{padding:'7px 8px',color:'#7c3aed',verticalAlign:'middle',fontSize:11,fontWeight:600}}>{fmtDateShort(customer.dm1Book)}</td>
-      <td style={{padding:'7px 8px',color:'#64748b',verticalAlign:'middle',fontSize:11}}>{fmtDateShort(customer.dm2Date)}</td>
+      <td style={{padding:'7px 8px',color:'#111827',verticalAlign:'middle',fontSize:11}}>{fmtDateShort(customer.dm2Date)}</td>
       <td style={{padding:'7px 8px',color:'#0284c7',verticalAlign:'middle',fontSize:11,fontWeight:600}}>{fmtDateShort(customer.dm2Book)}</td>
-      <td style={{padding:'7px 8px',verticalAlign:'middle',fontWeight:600,color:'#374151'}}>{fmtDate(customer.entryDate)}</td>
+      <td style={{padding:'7px 8px',verticalAlign:'middle',fontWeight:600,color:'#111827'}}>{fmtDate(customer.entryDate)}</td>
       <td style={{padding:'7px 6px',verticalAlign:'middle',textAlign:'center'}}>
         {customer.tokuten&&customer.tokuten!=='-'&&(
           <span style={{padding:'2px 7px',background:'#ede9fe',color:'#7c3aed',borderRadius:10,fontSize:11,fontWeight:700}}>
@@ -893,11 +1036,11 @@ const CustomerRow=memo(({customer,onBook,onRevive})=>{
       <td style={{padding:'7px 6px',verticalAlign:'middle',textAlign:'center'}}>
         {courseObj&&<span style={{padding:'2px 7px',background:courseObj.bg,color:courseObj.color,borderRadius:10,fontSize:11,fontWeight:700}}>{courseObj.short}</span>}
       </td>
-      <td style={{padding:'7px 8px',color:'#64748b',verticalAlign:'middle',fontSize:11}}>
+      <td style={{padding:'7px 8px',color:'#111827',verticalAlign:'middle',fontSize:11}}>
         {customer.store==='honten'?'本店':customer.store==='sanda'?'三田店':customer.store}
       </td>
-      <td style={{padding:'7px 8px',color:'#64748b',verticalAlign:'middle',fontSize:11}}>{customer.staff}</td>
-      <td style={{padding:'7px 8px',color:'#94a3b8',verticalAlign:'middle',fontSize:11,maxWidth:120,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}
+      <td style={{padding:'7px 8px',color:'#111827',verticalAlign:'middle',fontSize:11}}>{customer.staff}</td>
+      <td style={{padding:'7px 8px',color:'#111827',verticalAlign:'middle',fontSize:11,maxWidth:120,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}
         title={customer.note}>{customer.note}</td>
     </tr>
   );
@@ -996,7 +1139,7 @@ const App=()=>{
     // cust-updatesポーリング（スケジュール側からの即時連動）
     const pollUpdates=async()=>{
       try{
-        const updates=await sGet('hub-v8-cust-updates');
+        const updates=await sGet(STOR+'cust-updates');
         if(!Array.isArray(updates)||updates.length===0)return;
         setFiles(prev=>{
           let changed=false;
@@ -1052,11 +1195,13 @@ const App=()=>{
   // ファイル削除
   const handleDeleteFile=useCallback(idx=>{
     if(!confirm(`「${files[idx].name}」を削除しますか？`))return;
+    const deletedFile=files[idx];
     setFiles(prev=>{
       const next=prev.filter((_,i)=>i!==idx);
       saveFilesIndex(next);
       return next;
     });
+    deleteFileFromCache(deletedFile);
     setActiveIdx(p=>Math.max(0,p>=idx?p-1:p));
   },[files]);
 
@@ -1077,6 +1222,15 @@ const App=()=>{
       });
       return next;
     });
+    // cust-updatesからキャンセル通知を削除（ポーリングで再cancelされないよう）
+    sGet(STOR+'cust-updates').then(updates=>{
+      if(!Array.isArray(updates)||updates.length===0)return;
+      const filtered=updates.filter(u=>
+        !(u.custId&&u.custId===customer.custId)&&
+        !(u.name&&u.name===customer.name&&String(u.no||'')===String(customer.no||''))
+      );
+      if(filtered.length!==updates.length)sSet(STOR+'cust-updates',filtered);
+    }).catch(()=>{});
   },[]);
 
   const handleBookingSave=useCallback(async(form,customer)=>{
