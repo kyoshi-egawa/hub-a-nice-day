@@ -6707,6 +6707,16 @@ function AppInner() {
         });
         return next;
       });
+      // ★custbkからも即時削除（画面の見た目を即反映）
+      setCustBookings(prev=>{
+        const next={...prev};
+        Object.keys(next).forEach(k=>{
+          if(next[k]?.formData?.custId===cancelCustId||(cancelName&&next[k]?.formData?.name===cancelName)){
+            delete next[k];
+          }
+        });
+        return next;
+      });
     }else{
       setSchedData(prev=>{const d={...(prev[modalDk]||{})};delete d[modalSlot];return{...prev,[modalDk]:d};});
     }
