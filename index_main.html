@@ -568,7 +568,7 @@ const CustLoanerDatePicker = ({isOpen, onClose, initFrom, initTo, selectedId, lo
           <table style={{borderCollapse:'collapse',tableLayout:'fixed',width:'max-content',fontSize:11}}>
             <thead>
               <tr>
-                <th style={{width:88,minWidth:88,background:'#e0f2fe',padding:'6px 8px',textAlign:'left',fontWeight:700,border:'1px solid #bae6fd',position:'sticky',left:0,zIndex:10,fontSize:10}}>代車</th>
+                <th style={{width:88,minWidth:88,background:'#e0f2fe',padding:'6px 8px',textAlign:'left',fontWeight:700,border:'1px solid #bae6fd',position:'sticky',left:0,top:0,zIndex:20,fontSize:10}}>代車</th>
                 {dateRange.map((d,i)=>{
                   const dow=new Date(d.year,d.month,d.day).getDay();
                   const isToday=d.year===today.getFullYear()&&d.month===today.getMonth()&&d.day===today.getDate();
@@ -5140,7 +5140,7 @@ const LoanerGrid=memo(({loanerRes,loanerMonth,setLoanerMonth,onAddRes,onDeleteRe
   return (
     <div>
       {/* ヘッダー */}
-      <div style={{display:'flex',alignItems:'center',gap:12,marginBottom:14,flexWrap:'wrap'}}>
+      <div style={{display:'flex',alignItems:'center',gap:12,marginBottom:6,flexWrap:'wrap',flexShrink:0}}>
         <button onClick={onBack} style={BACK_S}><ChevronLeft size={16}/>{pickMode?'モーダルに戻る':'カレンダーへ'}</button>
         <h2 style={{fontSize:18,fontWeight:800,color:'#1e1b4b',margin:0}}>
           🚗 代車管理
@@ -5170,7 +5170,7 @@ const LoanerGrid=memo(({loanerRes,loanerMonth,setLoanerMonth,onAddRes,onDeleteRe
       </div>
 
       {/* 月ナビゲーション */}
-      {!pickMode&&<div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:10,marginBottom:10}}>
+      {!pickMode&&<div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:10,marginBottom:8,flexShrink:0}}>
         <button onClick={()=>setLoanerMonth(new Date(loanerMonth.getFullYear(),loanerMonth.getMonth()-1,1))}
           style={{padding:'5px 14px',background:'#4338ca',color:'white',border:'none',borderRadius:6,cursor:'pointer',fontWeight:700,fontSize:13}}>
           ◀ 前月
@@ -5188,6 +5188,9 @@ const LoanerGrid=memo(({loanerRes,loanerMonth,setLoanerMonth,onAddRes,onDeleteRe
         </button>
       </div>}
 
+      {/* スクロールコンテナ（代車+レンタカー共通） */}
+      <div style={{flex:1,minHeight:0,overflowY:'auto',overflowX:'hidden'}}>
+
       {/* グリッド：overflow:hiddenでズレ防止 */}
       <div ref={gridRef} 
         style={{overflowX:'auto',userSelect:'none',WebkitUserSelect:'none',willChange:'scroll-position',transform:'translateZ(0)'}}
@@ -5196,7 +5199,7 @@ const LoanerGrid=memo(({loanerRes,loanerMonth,setLoanerMonth,onAddRes,onDeleteRe
         <table style={{borderCollapse:'collapse',fontSize:12,tableLayout:'fixed',width:'max-content'}}>
           <thead>
             <tr>
-              <th style={{width:100,minWidth:100,maxWidth:100,background:'#eef2ff',padding:'7px 9px',textAlign:'left',fontWeight:700,border:'1px solid #e5e7eb',position:'sticky',left:0,zIndex:10,fontSize:11,boxSizing:'border-box',transform:'translateZ(0)',backfaceVisibility:'hidden'}}>代車</th>
+              <th style={{width:100,minWidth:100,maxWidth:100,background:'#eef2ff',padding:'7px 9px',textAlign:'left',fontWeight:700,border:'1px solid #e5e7eb',position:'sticky',left:0,top:0,zIndex:20,fontSize:11,boxSizing:'border-box'}}>代車</th>
               {dateRange.map((dateObj,i)=>{
                 if(!dateObj)return null;
                 const {year,month,day}=dateObj;
@@ -5305,6 +5308,7 @@ const LoanerGrid=memo(({loanerRes,loanerMonth,setLoanerMonth,onAddRes,onDeleteRe
           </tbody>
         </table>
       </div>
+      </div>{/* /スクロールコンテナ */}
 
       {/* ホバープレビュー（軽量・消えやすい） */}
       {!pickMode&&hoverRes&&!pinnedRes&&(
@@ -7906,7 +7910,7 @@ function AppInner() {
 
         {/* -- 代車管理 -- */}
         {view==='loaner'&&(
-          <div style={{background:'white',borderRadius:13,padding:'4px 4px',boxShadow:'0 10px 40px rgba(0,0,0,.18)',borderTop:`4px solid ${vsStore.color}`,maxHeight:'calc(100vh - var(--header-h,90px) - 40px)',overflowY:'auto'}}>
+          <div style={{background:'white',borderRadius:13,padding:'4px 4px',boxShadow:'0 10px 40px rgba(0,0,0,.18)',borderTop:`4px solid ${vsStore.color}`,height:'calc(100vh - var(--header-h,90px) - 40px)',display:'flex',flexDirection:'column',overflow:'hidden'}}>
             <LoanerGrid
               loanerRes={loanerRes} loanerMonth={loanerMonth} setLoanerMonth={setLoanerMonth}
               onAddRes={addLoanerRes} onDeleteRes={deleteLoanerRes} onUndo={undoLoanerRes}
