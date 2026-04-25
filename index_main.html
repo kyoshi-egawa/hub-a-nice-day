@@ -17,7 +17,7 @@
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; overflow: hidden; }
+    html, body { height: 100%; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
     @media print {
       body * { visibility: hidden; }
@@ -5190,9 +5190,6 @@ const LoanerGrid=memo(({loanerRes,loanerMonth,setLoanerMonth,onAddRes,onDeleteRe
         </button>
       </div>}
 
-      {/* スクロールコンテナ（代車+レンタカー共通） */}
-      <div style={{flex:1,minHeight:0,overflowY:'auto',overflowX:'auto'}}>
-
       {/* グリッド：overflow:hiddenでズレ防止 */}
       <div ref={gridRef} 
         style={{overflowX:'auto',userSelect:'none',WebkitUserSelect:'none',willChange:'scroll-position',transform:'translateZ(0)'}}
@@ -5666,7 +5663,6 @@ const LoanerGrid=memo(({loanerRes,loanerMonth,setLoanerMonth,onAddRes,onDeleteRe
           </div>
         </div>
       )}
-      </div>{/* /スクロールラッパー */}
     </div>
   );
 });
@@ -7116,7 +7112,7 @@ function AppInner() {
           }
           const total=cnt[1]+cnt[2]+cnt[3];
           return (
-            <div style={{background:'white',borderRadius:13,boxShadow:'0 10px 40px rgba(0,0,0,.18)',borderTop:`4px solid ${vsStore.color}`,height:'calc(100vh - var(--header-h,90px) - 40px)',display:'flex',flexDirection:'column',overflow:'hidden'}}>
+            <div style={{background:'white',borderRadius:13,boxShadow:'0 10px 40px rgba(0,0,0,.18)',borderTop:`4px solid ${vsStore.color}`,maxHeight:'calc(100vh - var(--header-h,90px) - 40px)',overflowY:'auto'}}>
               {/* -- ナビ＋集計を1行に統合 -- */}
               <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:0,gap:8,flexWrap:'wrap',flexShrink:0,padding:'14px 18px 10px',borderBottom:'1px solid #e5e7eb'}}>
                 {/* 左：月集計 or スタッフフィルター */}
