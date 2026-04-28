@@ -1859,7 +1859,7 @@ const StaffSettingsModal=memo(({isOpen,onClose,staffListH,staffListS,onUpdate,on
         ):(
           <div style={{display:'flex',flex:1,overflow:'hidden'}}>
             {/* 左：スタッフ一覧 */}
-            <div style={{width:200,borderRight:'2px solid #e5e7eb',display:'flex',flexDirection:'column',flexShrink:0}}>
+            <div style={{width:200,borderRight:'2px solid #e5e7eb',display:'flex',flexDirection:'column',flexShrink:0,overflowY:'auto'}}>
               <div style={{display:'flex',borderBottom:'1px solid #e5e7eb',flexShrink:0}}>
                 {STORES.map(s=>(
                   <button key={s.id} onClick={()=>{setTab(s.id);setSelUid(null);}}
@@ -2214,7 +2214,7 @@ const LoginScreen=({onLogin,staffListH,staffListS,onRegister,onSettings,desktopL
   // ステップ1：通常ログイン画面
   return (
     <div style={{minHeight:'100vh',background:'linear-gradient(140deg,#1e1b4b,#4338ca,#0e7490)',display:'flex',alignItems:'flex-start',justifyContent:'center',fontFamily:'system-ui,sans-serif',padding:'24px 16px',overflowY:'auto'}}>
-      <div style={{background:'white',borderRadius:20,padding:'32px 36px',maxWidth:680,width:'100%',boxShadow:'0 30px 80px rgba(0,0,0,0.4)'}}>
+      <div style={{background:'white',borderRadius:20,padding:'32px 36px',maxWidth:680,width:'100%',boxShadow:'0 30px 80px rgba(0,0,0,0.4)',maxHeight:'90vh',overflowY:'auto'}}>
         <div style={{textAlign:'center',marginBottom:24}}>
           <div style={{fontSize:44,marginBottom:6}}>🚗</div>
           <h1 style={{fontSize:22,fontWeight:900,color:'#1e1b4b',margin:0}}>Hub a Nice day</h1>
