@@ -364,7 +364,13 @@ const parseExcelFile=async(file)=>{
           }
 
           // コース変換
-          const courseObj=COURSES.find(c=>courseRaw.includes(c.name)||courseRaw===c.short);
+          const courseObj=COURSES.find(c=>{
+            const r=courseRaw.replace(/車検/g,'').trim();
+            return courseRaw.includes(c.name)||courseRaw===c.short||
+                   c.name.includes(r)||r===c.short||
+                   // 略称マッチ: レギュラー→レギュラー車検, クイック→クイック車検, マッハ→マッハ車検
+                   (r.length>=2&&c.name.startsWith(r));
+          });
 
           // 店舗変換
           let storeId='';
@@ -1321,6 +1327,12 @@ const App=()=>{
         if(courseNum===1){
           const mahCount=existingRows.filter(r=>Number(r.course)===1).length;
           if(mahCount>=2){needsApproval=true;}
+        }
+
+        // courseNum=0はExcelのコース列が未認識（保存を中止）
+        if(courseNum===0){
+          alert('⚠️ コースが認識できませんでした。\n顧客データのコース列を確認してください。\n（例：マッハ車検・クイック車検・レギュラー車検）');
+          return;
         }
 
         // 新しい予約を追加
