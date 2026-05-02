@@ -4982,21 +4982,25 @@ const LoanerGrid=memo(({loanerRes,loanerMonth,setLoanerMonth,onAddRes,onDeleteRe
 
   // 選択日列を中央にスクロール（初回のみ）
   useEffect(()=>{
-    if(!gridRef.current||!selDate||scrollLock.current)return;
-    const thWidth=100,cellWidth=28;
-    // dateRange内でのselDateのインデックスを取得
-    const targetIndex=dateRange.findIndex(d=>
-      d.year===selDate.getFullYear()&&
-      d.month===selDate.getMonth()&&
-      d.day===selDate.getDate()
-    );
-    if(targetIndex===-1)return;
-    const targetX=thWidth+targetIndex*cellWidth;
-    const containerW=gridRef.current.clientWidth;
-    // 本日が左端から3列目に来るよう設定（左に2日分の余白）
-    gridRef.current.scrollLeft=targetIndex*cellWidth-cellWidth*2;
-          if(rentalScrollRef.current){rentalScrollRef.current.scrollLeft=targetIndex*cellWidth-cellWidth*2;}
+    if(!selDate||scrollLock.current)return;
+    // DOMレンダリング後に確実に実行（setTimeout）
+    const timer=setTimeout(()=>{
+      if(!gridRef.current)return;
+      const thWidth=100,cellWidth=28;
+      const targetIndex=dateRange.findIndex(d=>
+        d.year===selDate.getFullYear()&&
+        d.month===selDate.getMonth()&&
+        d.day===selDate.getDate()
+      );
+      if(targetIndex===-1)return;
+      // 本日が左端から3列目に来るよう設定
+      gridRef.current.scrollLeft=targetIndex*cellWidth-cellWidth*2;
+      if(rentalScrollRef.current){
+        rentalScrollRef.current.scrollLeft=targetIndex*cellWidth-cellWidth*2;
+      }
       scrollLock.current=true;
+    },100);
+    return()=>clearTimeout(timer);
   },[selDate]); // dateRangeを削除（selDateから計算されるため不要）
 
   const getRes=(cid,y,m,d)=>{const num=toNum(y,m,d);return(loanerRes[cid]||[]).find(r=>num>=toNum(r.fy,r.fm,r.fd)&&num<=toNum(r.ty,r.tm,r.td));};
@@ -7921,7 +7925,7 @@ function AppInner() {
 
         {/* -- 代車管理 -- */}
         {view==='loaner'&&(
-          <div style={{background:'white',borderRadius:13,padding:'4px 4px',boxShadow:'0 10px 40px rgba(0,0,0,.18)',borderTop:`4px solid ${vsStore.color}`,height:'calc(100vh - var(--header-h,90px) - 40px)',overflowY:'auto'}}>
+          <div style={{background:'white',borderRadius:13,padding:'4px 4px',boxShadow:'0 10px 40px rgba(0,0,0,.18)',borderTop:`4px solid ${vsStore.color}`,overflowY:'auto',maxHeight:'calc(100vh - var(--header-h,90px) - 8px)'}}>
             <LoanerGrid
               loanerRes={loanerRes} loanerMonth={loanerMonth} setLoanerMonth={setLoanerMonth}
               onAddRes={addLoanerRes} onDeleteRes={deleteLoanerRes} onUndo={undoLoanerRes}
